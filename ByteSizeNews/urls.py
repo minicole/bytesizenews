@@ -15,7 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from ByteSizeNews import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^articles/[0-9a-zA-Z_-]+/category/', views.get_articles_from_category),
+    url(r'^articles/',views.get_all_articles),
 ]
