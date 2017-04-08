@@ -1,5 +1,3 @@
-__author__ = 'Thinesh'
-
 from ByteSizeNews.models import Article
 
 
