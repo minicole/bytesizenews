@@ -7,7 +7,7 @@ from ByteSizeNews.NewsFetchService import fetch_latest_news
 
 logger = get_task_logger(__name__)
 
-NewsFetchingPeriod = '*/1'
+NewsFetchingPeriod = '*/15'
 
 @periodic_task(run_every=(crontab(minute=NewsFetchingPeriod)), name="news_fetching_task", ignore_result=True)
 def fetch_news(filter="latest"):
