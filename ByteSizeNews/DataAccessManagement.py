@@ -23,7 +23,11 @@ def save_article_unsummarized(title, author, url, type, source, description,url_
     :param published_at:
     :return:
     """
-    article = Article.objects.get(url=url)
+    try:
+        article = Article.objects.get(url=url)
+    except RealEstateListing.DoesNotExist:
+        article = None
+
     if not article:
         article = Article(title=title,author=author,url=url,type=type,source=source,description=description,url_to_image=url_to_image, published_at=publisjed_at)
         article.save()
