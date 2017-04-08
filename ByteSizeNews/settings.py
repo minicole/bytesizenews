@@ -31,7 +31,7 @@ SMMRY_KEY = keys['<<SMMRYKey>>']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['localhost', 'ec2-34-205-85-30.compute-1.amazonaws.com','bytesizenews.net']
 
 
 # Application definition
