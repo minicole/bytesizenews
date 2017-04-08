@@ -1,4 +1,3 @@
-from ByteSizeNews.tasks import fetch_news
 
 
 def fetch_latest_news(self):
