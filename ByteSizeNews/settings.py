@@ -27,6 +27,7 @@ with open('private.keys') as json_keys:
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = keys['<<DjangoSecretKey>>']
 SMMRY_KEY = keys['<<SMMRYKey>>']
+NEWS_KEY = keys['<<NewsAPIKey>>']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
