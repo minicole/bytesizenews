@@ -7,8 +7,7 @@ log = logging.getLogger(__name__)
 
 
 DEBUG = True;
-apirequestheader =
-"https://newsapi.org/v1/articles?source={0}&sortBy=latest&apiKey={1}"
+apirequestheader ="https://newsapi.org/v1/articles?source={0}&sortBy=latest&apiKey={1}"
 
     # "author": "TNW Deals",
     # "title": "Learn to tackle any task with project management training - only $69",
