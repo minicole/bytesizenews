@@ -9,29 +9,20 @@ angular.module('myApp.article_page', ['ngRoute'])
         });
     }])
 
-    .controller('article_pageCtrl', [function () {
+    .controller('article_pageCtrl', ['$route', '$http', function ($route, $http) {
         var config = {headers: {}};
-        var url = 'http://bytesizenews.net:8080/articles/';
+        var url = 'http://bytesizenews.net:8080/article/';
 
-        if ($route.current.params.category) {
-            url += $route.current.params.category.toLowerCase() + '/';
+        if ($route.current.params.articleid) {
+            url += $route.current.params.articleid + '/';
         }
 
         $http.get(url, config)
             .then(function (response) {
                 console.log(response);
-                var articlesParsed = JSON.parse(JSON.parse(response.data));
-                var articles = [];
-                for (var i = 0; i < articlesParsed.length; i++) {
-                    var article = articlesParsed[i];
-                    if (article.url_to_image) {
-                        article.background = "background-image: url(" + article.url_to_image + ")";
-                    } else {
-                        article.background = "background-color: " + randomColor();
-                    }
-                    articles.push(article);
-                }
+                var articleParsed = JSON.parse(response.data);
 
-                $scope.articles = articles;
+                articleParsed.rated = articleParsed.rating.find(nb_sentences == articleParsed.summary_sentences.length);
+                $scope.article = articleParsed;
             });
     }]);

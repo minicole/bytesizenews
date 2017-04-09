@@ -17,9 +17,8 @@ def get_all_articles(request):
     Gets all the articles for all categories
     """
     articles = DataAccessManagement.get_articles()
-    articles_serialized = json.dumps(articles)
 
-    resp = HttpResponse(articles_serialized)
+    resp = HttpResponse(articles)
     resp.setdefault("Access-Control-Allow-Origin", "*")
     resp.setdefault('Access-Control-Allow-Methods', 'GET, POST')
     resp.setdefault("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token")
@@ -30,9 +29,19 @@ def get_all_articles(request):
 @csrf_exempt
 def get_articles_from_category(request, category):
     articles = DataAccessManagement.get_articles_from_category(category)
-    articles_serialized = json.dumps(articles)
+    resp = HttpResponse(articles)
+    resp.setdefault("Access-Control-Allow-Origin", "*")
+    resp.setdefault('Access-Control-Allow-Methods', 'GET, POST')
+    resp.setdefault("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token")
 
-    resp = HttpResponse(articles_serialized)
+    return resp
+
+
+@csrf_exempt
+def get_article(request, articleID):
+    article = DataAccessManagement.get_article_by_id(articleID)
+
+    resp = HttpResponse(article)
     resp.setdefault("Access-Control-Allow-Origin", "*")
     resp.setdefault('Access-Control-Allow-Methods', 'GET, POST')
     resp.setdefault("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token")

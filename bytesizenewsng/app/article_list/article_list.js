@@ -9,7 +9,7 @@ angular.module('myApp.article_list', ['ngRoute'])
         });
     }])
 
-    .controller('article_listCtrl', ['$scope', '$http', '$route', function ($scope, $http, $route) {
+    .controller('article_listCtrl', ['$scope', '$http', '$route', '$window', '$location', function ($scope, $http, $route, $window, $location) {
         var randomColor = function() {
             var letters = '0123456789ABCDEF';
             var color = '#';
@@ -29,7 +29,7 @@ angular.module('myApp.article_list', ['ngRoute'])
         $http.get(url,config)
             .then(function(response) {
                 console.log(response);
-                var articlesParsed = JSON.parse(JSON.parse(response.data));
+                var articlesParsed = JSON.parse(response.data);
                 var articles = [];
                 for (var i = 0; i < articlesParsed.length; i++) {
                     var article = articlesParsed[i];
@@ -43,4 +43,14 @@ angular.module('myApp.article_list', ['ngRoute'])
 
                 $scope.articles = articles;
             });
+
+        $scope.goToArticle = function(articleid) {
+            var newUrl = $location.$$absUrl.substring(0, $location.$$absUrl.indexOf("/#!/")) + "/#!/article_page/" + articleid;
+            if ($scope.$$phase)
+                $window.location.href = newUrl;
+            else {
+                $location.path(newUrl);
+                $scope.$apply();
+            }
+        }
     }]);
