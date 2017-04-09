@@ -1,18 +1,23 @@
 'use strict';
 
-angular.module('myApp.view2', ['ngRoute'])
+angular.module('myApp.article_list', ['ngRoute'])
 
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/view2', {
-            templateUrl: 'view2/view2.html',
-            controller: 'View2Ctrl'
+        $routeProvider.when('/article_list/:category?', {
+            templateUrl: 'article_list/article_list.html',
+            controller: 'article_listCtrl'
         });
     }])
 
-    .controller('View2Ctrl', ['$scope', '$http', function ($scope, $http) {
+    .controller('article_listCtrl', ['$scope', '$http', '$route', function ($scope, $http, $route) {
         var config = {headers:  {} };
+        var url = 'http://bytesizenews.net:8080/articles/';
 
-        $http.get('http://localhost:8001/articles/',config)
+        if ($route.current.params.category) {
+            url += $route.current.params.category.toLowerCase() + '/';
+        }
+
+        $http.get(url,config)
             .then(function(response) {
                 console.log(response);
                 var articlesStringified = response.data;
