@@ -3,14 +3,15 @@ import logging
 
 log = logging.getLogger(__name__)
 
+
 def get_articles():
-    return [Article(title="article1", author="author1", url="url1").to_json(),
-            Article(title="article2", author="author2", url="url2").to_json()]
+    return [Article(title="article1", author="author1", url="url1", url_to_image="https://i.ytimg.com/vi/qh7LLydY8eo/maxresdefault.jpg").to_json(),
+            Article(title="article2", author="author2", url="url2", url_to_image="http://i.telegraph.co.uk/multimedia/archive/03519/potd-squirrel_3519920k.jpg").to_json()]
 
 
 def get_articles_from_category(category):
-    return [Article(title="article1cat1", author="author1", url="url1").to_json(),
-            Article(title="article2cat1", author="author2", url="url2").to_json()]
+    return [Article(title="article1cat1", author="author1", url="url1", url_to_image="https://i.ytimg.com/vi/qh7LLydY8eo/maxresdefault.jpg").to_json(),
+            Article(title="article2cat1", author="author2", url="url2", url_to_image="http://i.telegraph.co.uk/multimedia/archive/03519/potd-squirrel_3519920k.jpg").to_json()]
 
 
 def save_article_unsummarized(title, author, url, source, description, url_to_image, published_at):
