@@ -1,9 +1,13 @@
 from ByteSizeNews.models import *
+from datetime import datetime, timedelta
 from mongoengine.queryset.visitor import Q
 import logging
 import json
 
 log = logging.getLogger(__name__)
+
+TIME_THRESHOLD_CONSTANT_DAYS = 0
+TIME_THRESHOLD_CONSTANT_HOURS = 5
 
 def get_articles():
     return [Article(title="article1", author="author1", url="url1").to_json(),
@@ -27,7 +31,8 @@ def get_article_by_url(url):
     except Article.DoesNotExist:
         return json.dumps("{'status':'Does not exist Error'}")
 
-def get_articles_from_category(category):
+
+def get_articles_from_category(category, time_delta_ago=timedelta(days= TIME_THRESHOLD_CONSTANT_DAYS,hours=TIME_THRESHOLD_CONSTANT_HOURS)):
     """
     
     :param category: Possible options: business, entertainment, gaming, general, 
@@ -35,8 +40,11 @@ def get_articles_from_category(category):
     :return: list of all articles to json
     """
 
+    time_threshold = datetime.now() - time_delta_ago
+
     # Get all sources with that category
-    source_list = Source.objects.filter(Q(description__contains=category) | Q(category=category))
+    source_list = Source.objects.filter(Q(description__contains=category) | Q(category=category))\
+        .filter(published_at__gt=time_threshold).order_by('published_at')
     if len(source_list) > 0:
         article_list = Article.objects.filter(source__in=source_list)
 
