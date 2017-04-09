@@ -10,6 +10,15 @@ angular.module('myApp.article_list', ['ngRoute'])
     }])
 
     .controller('article_listCtrl', ['$scope', '$http', '$route', function ($scope, $http, $route) {
+        var randomColor = function() {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++ ) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        };
+
         var config = {headers:  {} };
         var url = 'http://bytesizenews.net:8080/articles/';
 
@@ -20,10 +29,16 @@ angular.module('myApp.article_list', ['ngRoute'])
         $http.get(url,config)
             .then(function(response) {
                 console.log(response);
-                var articlesStringified = response.data;
+                var articlesParsed = JSON.parse(JSON.parse(response.data));
                 var articles = [];
-                for (var i = 0; i < articlesStringified.length; i++) {
-                    articles.push(JSON.parse(articlesStringified[i]));
+                for (var i = 0; i < articlesParsed.length; i++) {
+                    var article = articlesParsed[i];
+                    if (article.url_to_image) {
+                        article.background = "background-image: url(" + article.url_to_image + ")";
+                    } else {
+                        article.background = "background-color: " + randomColor();
+                    }
+                    articles.push(article);
                 }
 
                 $scope.articles = articles;
