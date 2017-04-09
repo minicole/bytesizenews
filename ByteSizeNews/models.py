@@ -55,6 +55,7 @@ class Article(Document):
         :return: 
         """
         return dict(
+            id=str(self.id),
             url=self.url,
             url_to_image=self.url_to_image,
             published_at=self.published_at.isoformat(),
