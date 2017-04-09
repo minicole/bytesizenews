@@ -19,8 +19,8 @@ def fetch_news(filter="latest"):
     fetch_and_save_latest_news()
 
 
-# Fetch and update sources 10min after midnight every day
-@periodic_task(run_every=(crontab(minute=10, hour=0)), name="sources_fetching_task", ignore_result=True)
+# Fetch and update sources 30min after midnight every day
+@periodic_task(run_every=(crontab(minute=30, hour=0)), name="sources_fetching_task", ignore_result=True)
 def fetch_sources():
     """fetch article from newsapi service"""
     fetch_save_and_update_sources()
