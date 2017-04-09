@@ -43,27 +43,27 @@ def fetch_latest_news_by_source(source):
             sortBy = available_sort
             break
 
-    apirequest = article_api_request_format.format(source.id, sortBy, settings.NEWS_KEY)
+    apirequest = article_api_request_format.format(source.source_id, sortBy, settings.NEWS_KEY)
     log.info(apirequest)
     r = requests.get(apirequest)
     jsonresponse = r.json()
+    if jsonresponse['status'] == "ok":
+        articles = jsonresponse['articles'] # gives array of latest articles
 
-    articles = jsonresponse['articles'] # gives array of latest articles
+        for article in articles:
+            try:
+                publishedDate = dateutil.parser.parse(article['publishedAt'])
+            except:
+                # Put current
+                publishedDate = datetime.now(pytz.utc)
 
-    for article in articles:
-        try:
-            publishedDate = dateutil.parser.parse(article['publishedAt'])
-        except:
-            # Put current
-            publishedDate = datetime.now(pytz.utc)
-
-        save_article_unsummarized(title=article['title'], author=article['author'], url=article['url'], source=source,
-                                  description=article['description'], url_to_image=article['urlToImage'],
-                                  published_at=publishedDate)
-        # #Ony save once per call
-        # if DEBUG:
-        #     log.info(article)
-        #     break
+            save_article_unsummarized(title=article['title'], author=article['author'], url=article['url'], source=source,
+                                      description=article['description'], url_to_image=article['urlToImage'],
+                                      published_at=publishedDate)
+            # #Ony save once per call
+            # if DEBUG:
+            #     log.info(article)
+            #     break
 
 
 def fetch_save_and_update_sources():
