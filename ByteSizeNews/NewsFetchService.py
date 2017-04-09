@@ -1,7 +1,10 @@
 from django.conf import settings
 from ByteSizeNews.DataAccessManagement import *
+import pytz
+import dateutil.parser
 import requests
 import logging
+
 
 log = logging.getLogger(__name__)
 
@@ -26,7 +29,12 @@ def fetch_latest_news(source="the-next-web"):
     articles = jsonresponse['articles'] # gives array of latest articles
 
     for article in articles:
-        save_article_unsummarized(article['title'], article['author'], article['url'], "N/A",jsonresponse['source'], article['description'], article['urlToImage'], article['publishedAt'])
+        try:
+            publishDate = dateutil.parser.parse(article['publishedAt'])
+        except:
+            # Put current
+            publishDate = datetime.now(pytz.utc)
+        save_article_unsummarized(article['title'], article['author'], article['url'], "N/A",jsonresponse['source'], article['description'], article['urlToImage'], publishedDate)
         #Ony save once per call
         if DEBUG:
             log.info(article)
