@@ -20,6 +20,7 @@ angular.module('myApp.view2', ['ngRoute'])
                 for (var i = 0; i < articlesStringified.length; i++) {
                     articles.push(JSON.parse(articlesStringified[i]));
                 }
+
                 $scope.articles = articles;
             });
     }]);
