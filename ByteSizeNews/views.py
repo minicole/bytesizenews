@@ -5,7 +5,6 @@ import requests
 from django.views.decorators.csrf import csrf_exempt
 
 from ByteSizeNews.models import Article
-import json
 from ByteSizeNews import DataAccessManagement
 from django.core import serializers
 

@@ -19,6 +19,6 @@ from ByteSizeNews import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^articles/[0-9a-zA-Z_-]+/category/', views.get_articles_from_category),
-    url(r'^articles/',views.get_all_articles),
+    url(r'^articles/(?P<category>[a-zA-Z]+)/', views.get_articles_from_category),
+    #url(r'^articles/',views.get_all_articles),
 ]
