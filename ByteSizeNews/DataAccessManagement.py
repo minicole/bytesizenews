@@ -1,4 +1,5 @@
 from ByteSizeNews.models import *
+from ByteSizeNews.SummarizeService import *
 from datetime import datetime, timedelta
 from mongoengine.queryset.visitor import Q
 import logging
@@ -28,7 +29,7 @@ def get_article_by_id(article_id):
         article = Article.objects.get(id=article_id)
 
         if article.is_summarized:
-            update_summarized_article(article)
+            article = update_summarized_article(article)
 
         return article.to_json()
 
@@ -62,7 +63,7 @@ def get_articles_from_category(category, time_delta_ago=timedelta(days= TIME_THR
 
 
 def update_summarized_article(article):
-    pass
+    return summarize(article)
 
 
 
