@@ -54,3 +54,7 @@
   left: inherit;
   right: 5px;
 }
+
+.thumbs {
+  cursor: pointer;
+}

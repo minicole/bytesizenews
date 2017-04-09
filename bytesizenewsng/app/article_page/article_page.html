@@ -9,8 +9,8 @@
         <span ng-repeat="sentence in article.summary_sentences">{{ sentence }} </span>
         <div class="row ratings">
             <div class="col-md-3">Rate this summary:</div>
-            <div class="col-md-1" ng-click="rateThumbsUp()">&#x1F44D; {{ article.rated.nb_thumbs_up }}</div>
-            <div class="col-md-1" ng-click="rateThumbsDown()">&#x1F44E; {{ article.rated.nb_thumbs_down }}</div>
+            <div class="col-md-1"><span class="thumbs" ng-click="rateThumbsUp()">&#x1F44D;</span> {{ article.rated.nb_thumbs_up }}</div>
+            <div class="col-md-1"><span class="thumbs" ng-click="rateThumbsDown()">&#x1F44E;</span> {{ article.rated.nb_thumbs_down }}</div>
         </div>
     </div>
     <div class="col-md-4">
