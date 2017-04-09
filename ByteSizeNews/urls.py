@@ -21,5 +21,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^articles/(?P<category>[a-zA-Z]+)/', views.get_articles_from_category),
     url(r'^articles/',views.get_all_articles),
-    url(r'^article/(?P<articleID>[a-zA-Z]+)/', views.get_article),
+    url(r'^article/(?P<articleID>[0-9a-zA-Z]+)/', views.get_article),
 ]
