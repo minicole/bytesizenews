@@ -52,12 +52,12 @@ def save_source(id, category, name, description, language, country, sortBysAvail
     """
 
     try:
-        source = Source.objects.get(id=id)
+        source = Source.objects.get(source_id=id)
     except Source.DoesNotExist:
         source = None
 
     if source is None:
-        source = Source(id=id, name=name, category=category, description=description, language=language,
+        source = Source(source_id=id, name=name, category=category, description=description, language=language,
                         country=country, sortBysAvailable=sortBysAvailable, urlsToLogos=urlsToLogos)
         source.save()
         log.info("New Source:{0} saved into db".format(source))
