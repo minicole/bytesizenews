@@ -10,7 +10,7 @@ class Rating(Document):
 class Source(Document):
     category = StringField()
     source_id = StringField(unique=True, required=True)
-    name = StringField()
+    source_name = StringField()
     description = StringField()
     language = StringField()
     country = StringField()
