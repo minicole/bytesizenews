@@ -1,10 +1,7 @@
 # Load url from database
 
 from django.conf import settings
-from ByteSizeNews.DataAccessManagement import *
-
 import requests
-# import DAM
 
 apirequestheader = "http://api.smmry.com/&SM_API_KEY="+settings.SMMRY_KEY+"&SM_KEYWORD_COUNT=5&SM_WITH_BREAK"
 
@@ -12,10 +9,8 @@ apirequestheader = "http://api.smmry.com/&SM_API_KEY="+settings.SMMRY_KEY+"&SM_K
 def summarize(article, numberOfSentances=7):
     # Build API request
     apirequest = apirequestheader+"&SM_LENGTH="+str(numberOfSentances)+"&SM_URL="+article.url
-    print(apirequest)
     r = requests.get(apirequest)
     jsonresponse = r.json()
-    print(jsonresponse)
 
     keywordArray = jsonresponse['sm_api_keyword_array']
     newsTitle = jsonresponse['sm_api_title']
@@ -23,11 +18,20 @@ def summarize(article, numberOfSentances=7):
     errorResponse = jsonresponse['sm_api_limitation']
     summarizedContent = jsonresponse['sm_api_content'].split("[BREAK]")
 
-    print("Keywords:"+",".join(keywordArray))
-    print("Title:"+newsTitle)
-    print("Characters:"+charCount)
-    print("Content:"+"\n".join(summarizedContent))
-    print("Error:"+errorResponse)
+    # Check the error response here
+    try:
+        article.summary_sentences = summarizedContent
+        article.keywords = keywordArray
+        article.is_summarized = True
+        article.save()
+        return article
+    except:
+        return None
+    # print("Keywords:"+",".join(keywordArray))
+    # print("Title:"+newsTitle)
+    # print("Characters:"+charCount)
+    # print("Content:"+"\n".join(summarizedContent))
+    # print("Error:"+errorResponse)
 
 
 # test
