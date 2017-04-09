@@ -29,7 +29,7 @@ def save_article_unsummarized(title, author, url, type, source, description,url_
         article = None
 
     if not article:
-        article = Article(title=title,author=author,url=url,type=type,source=source,description=description,url_to_image=url_to_image, published_at=publisjed_at)
+        article = Article(title=title,author=author,url=url,type=type,source=source,description=description,url_to_image=url_to_image, published_at=published_at)
         article.save()
         log.info(("Article:{0} saved int db").format(article))
     else:
