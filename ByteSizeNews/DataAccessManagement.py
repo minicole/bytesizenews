@@ -145,8 +145,8 @@ def addRating(isUp, article_id, nbSentences):
     """
     try:
         article = Article.objects.get(id=article_id)
+        rating = article.ratings.objects.get(nb_sentences=nbSentences)
 
-        rating = article.ratings.get(nb_sentences=nbSentences)
         if rating:
             if isUp:
                 rating.nb_thumbs_up += 1
