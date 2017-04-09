@@ -15,7 +15,7 @@ else:
     NewsFetchingPeriod = '*/45'
 
 @periodic_task(run_every=(crontab(minute=0)), name="news_fetching_task", ignore_result=True)
-def fetch_news(filter="latest"):
+def fetch_news():
     """fetch article from newsapi service"""
     fetch_and_save_latest_news()
 
@@ -24,5 +24,5 @@ def fetch_news(filter="latest"):
 # @periodic_task(run_every=(crontab(minute=SourceFetchingPeriod)), name="sources_fetching_task", ignore_result=True)
 @periodic_task(run_every=(crontab(minute=10, hour=0)), name="sources_fetching_task", ignore_result=True)
 def fetch_sources():
-    """fetch article from newsapi service"""
+    """fetch sources from newsapi service"""
     fetch_save_and_update_sources()

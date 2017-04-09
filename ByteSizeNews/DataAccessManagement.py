@@ -38,8 +38,8 @@ def save_article_unsummarized(title, author, url, source, description, url_to_im
         except ValidationError:
             log.info(("Article:{0} URL: {1} failed to be saved into db").format(title, url))
 
-    else:
-        log.info(("Article:{0} already exists in db").format(article))
+    #else:
+       #log.info(("Article:{0} already exists in db").format(article))
 
 
 def save_source(id, category, name, description, language, country, sortBysAvailable, urlsToLogos):
