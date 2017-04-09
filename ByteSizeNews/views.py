@@ -6,7 +6,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 from ByteSizeNews.models import Article
 import json
-from ByteSizeNews import DataAccessManagment
+from ByteSizeNews import DataAccessManagement
+from django.core import serializers
 
 import json
 
@@ -16,7 +17,7 @@ def get_all_articles(request):
     """
     Gets all the articles for all categories
     """
-    articles = DataAccessManagment.get_articles()
+    articles = DataAccessManagement.get_articles()
     articles_serialized = json.dumps(articles)
 
     resp = HttpResponse(articles_serialized)
@@ -29,7 +30,7 @@ def get_all_articles(request):
 
 @csrf_exempt
 def get_articles_from_category(request, category):
-    articles = DataAccessManagment.get_articles_from_category(category)
+    articles = DataAccessManagement.get_articles_from_category(category)
     articles_serialized = json.dumps(articles)
 
     resp = HttpResponse(articles_serialized)
