@@ -12,7 +12,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
     <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
-    <link rel="stylesheet" href="app.css">
     <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <!-- Latest compiled and minified CSS -->
@@ -23,6 +22,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <link href="/favicon.ico" rel="shortcut icon">
+    <link rel="stylesheet" href="app.css">
 </head>
 <body>
 <div class="bs-docs-header" id="content" tabindex="-1">
@@ -36,7 +36,7 @@
         </div>
     </div>
 </div>
-<header class="bs-docs-nav navbar navbar-static-top" id="top">
+<header class="bs-docs-nav navbar navbar-fixed-top" id="top">
     <div class="container">
         <div class="navbar-header">
             <button aria-controls="bs-navbar" aria-expanded="false" class="collapsed navbar-toggle"
@@ -45,9 +45,15 @@
             <a href="#!/article_list" class="navbar-brand">All Categories</a></div>
         <nav class="collapse navbar-collapse" id="bs-navbar">
             <ul class="nav navbar-nav">
-                <li><a href="#!/article_list/Entertainment">Entertainment</a></li>
                 <li><a href="#!/article_list/Business">Business</a></li>
+                <li><a href="#!/article_list/Entertainment">Entertainment</a></li>
+                <li><a href="#!/article_list/Gaming">Gaming</a></li>
+                <li><a href="#!/article_list/General">General</a></li>
+                <li><a href="#!/article_list/Music">Music</a></li>
                 <li><a href="#!/article_list/Politics">Politics</a></li>
+                <li><a href="#!/article_list/Science-and-Nature">Science and Nature</a></li>
+                <li><a href="#!/article_list/Sport">Sport</a></li>
+                <li><a href="#!/article_list/Technology">Technology</a></li>
             </ul>
         </nav>
     </div>
@@ -58,7 +64,7 @@
   <![endif]-->
 
 <div ng-view class="container"></div>
-<div>Byte Size News &copy; 2017 v<span app-version></span> - <a href="newsapi.org">Powered by NewAPI</a></div>
+<footer class="navbar navbar-fixed-bottom">Byte Size News &copy; 2017 v<span app-version></span> - <a href="newsapi.org">Powered by NewsAPI</a></footer>
 
 <!-- In production use:
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
@@ -66,7 +72,7 @@
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/angular-route/angular-route.js"></script>
 <script src="app.js"></script>
-<script src="view1/view1.js"></script>
+<script src="article_page/article_page.js"></script>
 <script src="article_list/article_list.js"></script>
 <script src="components/version/version.js"></script>
 <script src="components/version/version-directive.js"></script>

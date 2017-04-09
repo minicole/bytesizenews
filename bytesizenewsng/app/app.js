@@ -3,7 +3,7 @@
 // Declare app level module which depends on views, and components
 angular.module('myApp', [
   'ngRoute',
-  'myApp.view1',
+  'myApp.article_page',
   'myApp.article_list',
   'myApp.version'
 ]).
