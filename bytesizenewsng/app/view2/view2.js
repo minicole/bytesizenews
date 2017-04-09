@@ -10,20 +10,16 @@ angular.module('myApp.view2', ['ngRoute'])
     }])
 
     .controller('View2Ctrl', ['$scope', '$http', function ($scope, $http) {
+        var config = {headers:  {} };
 
-        $http({
-            method: 'POST',
-            url: 'http://localhost:8001/articles'
-        }).then(function successCallback(parameters) {
-            var response = parameters.response;
-            // this callback will be called asynchronously
-            // when the response is available
-            $scope.articles = response.data;
-
-        }, function errorCallback(parameters) {
-            var response = parameters.response;
-            // called asynchronously if an error occurs
-            // or server returns response with an error status.
-        });
-
+        $http.get('http://localhost:8001/articles/',config)
+            .then(function(response) {
+                console.log(response);
+                var articlesStringified = response.data;
+                var articles = [];
+                for (var i = 0; i < articlesStringified.length; i++) {
+                    articles.push(JSON.parse(articlesStringified[i]));
+                }
+                $scope.articles = articles;
+            });
     }]);
