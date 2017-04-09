@@ -1,5 +1,5 @@
-<p>This is the partial for view 2.</p>
-<p>
-    Showing of 'interpolate' filter:
-    {{articles}}
-</p>
+<div class="col-md-4" ng-repeat="article in articles" style="background-image: url({{ article.url_to_image }}); height:300px;">
+    <h2 class="see-over-image">{{ article.title }}</h2>
+    <h5 class="see-over-image">{{ article.author }}</h5>
+    <h4 class="see-over-image">{{ article.source }}</h4>
+</div>

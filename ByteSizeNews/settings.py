@@ -83,11 +83,6 @@ WSGI_APPLICATION = 'ByteSizeNews.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 connect('articles')
-# DATABASES = {
-#    'default' : {
-#       'ENGINE' : 'django_mongodb_engine'
-#    }
-# }
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
