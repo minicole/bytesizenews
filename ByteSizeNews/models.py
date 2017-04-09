@@ -6,6 +6,7 @@ class Rating(Document):
     nb_thumbs_up = IntField()
     nb_thumbs_down = IntField()
 
+
 class Article(Document):
     title = StringField()
     author = StringField()
