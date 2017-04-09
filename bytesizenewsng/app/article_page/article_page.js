@@ -9,7 +9,7 @@ angular.module('myApp.article_page', ['ngRoute'])
         });
     }])
 
-    .controller('article_pageCtrl', ['$route', '$http', function ($route, $http) {
+    .controller('article_pageCtrl', ['$route', '$http', '$scope', function ($route, $http, $scope) {
         var config = {headers: {}};
         var url = 'http://bytesizenews.net:8080/article/';
 
