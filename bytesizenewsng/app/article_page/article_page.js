@@ -11,6 +11,7 @@ angular.module('myApp.article_page', ['ngRoute'])
 
     .controller('article_pageCtrl', ['$route', '$http', '$scope', function ($route, $http, $scope) {
         var config = {headers: {}};
+        $scope.rated = false;
         var url = 'http://bytesizenews.net:8080/article/';
 
         if ($route.current.params.articleid) {
@@ -39,21 +40,27 @@ angular.module('myApp.article_page', ['ngRoute'])
             });
 
         $scope.rateThumbsUp = function () {
-            $scope.article.rated.nb_thumbs_up++;
-            url = "http://bytesizenews.net:8080/thumbsup/" + $scope.article.id + "/" + $scope.article.summarized_sentences.length + "/";
-            $http.get(url, config)
-                .then(function (response) {
-                    console.log(response);
-                });
+            if (!$scope.rated) {
+                $scope.article.rated.nb_thumbs_up++;
+                $scope.rated = true;
+                url = "http://bytesizenews.net:8080/thumbsup/" + $scope.article.id + "/" + $scope.article.summary_sentences.length + "/";
+                $http.get(url, config)
+                    .then(function (response) {
+                        console.log(response);
+                    });
+            }
         };
 
         $scope.rateThumbsDown = function () {
-            $scope.article.rated.nb_thumbs_down++;
-            url = "http://bytesizenews.net:8080/thumbsdown/" + $scope.article.id + "/" + $scope.article.summarized_sentences.length + "/";
-            $http.get(url, config)
-                .then(function (response) {
-                    console.log(response);
-                });
+            if (!$scope.rated) {
+                $scope.article.rated.nb_thumbs_down++;
+                $scope.rated = true;
+                url = "http://bytesizenews.net:8080/thumbsdown/" + $scope.article.id + "/" + $scope.article.summary_sentences.length + "/";
+                $http.get(url, config)
+                    .then(function (response) {
+                        console.log(response);
+                    });
+            }
         };
     }]);
 
