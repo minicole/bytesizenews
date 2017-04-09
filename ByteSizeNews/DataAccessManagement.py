@@ -46,7 +46,7 @@ def save_source(id, category, name, description, language, country, sortBysAvail
     :param description: 
     :param language: 
     :param country: 
-    :param sortsBysAvailable: 
+    :param sortBysAvailable: 
     :param urlsToLogos: 
     :return: 
     """
@@ -57,7 +57,7 @@ def save_source(id, category, name, description, language, country, sortBysAvail
         source = None
 
     if source is None:
-        source = Source(source_id=id, name=name, category=category, description=description, language=language,
+        source = Source(source_id=id, source_name=name, category=category, description=description, language=language,
                         country=country, sortBysAvailable=sortBysAvailable, urlsToLogos=urlsToLogos)
         source.save()
         log.info("New Source:{0} saved into db".format(source))
