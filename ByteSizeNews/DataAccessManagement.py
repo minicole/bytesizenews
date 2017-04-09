@@ -48,22 +48,22 @@ def get_articles_from_category(category, time_delta_ago=timedelta(days= TIME_THR
     time_threshold = datetime.now() - time_delta_ago
 
     # Get all sources with that category
-    source_list = Source.objects.filter(Q(description__contains=category) | Q(category=category))\
-        .filter(published_at__gt=time_threshold).order_by('published_at')
+    source_list = Source.objects.filter(Q(description__contains=category) | Q(category=category))
+
     if len(source_list) > 0:
-        article_list = Article.objects.filter(source__in=source_list)
+        article_list = Article.objects.filter(source__in=source_list)\
+            .filter(published_at__gt=time_threshold)\
+            .order_by('published_at')
 
         if len(article_list):
             return_json_list = [article.as_small_json() for article in article_list]
             return json.dumps(return_json_list)
 
-        # return [Article(title="article1cat1", author="author1", url="url1").to_json(),
-        #     Article(title="article2cat1", author="author2", url="url2").to_json()]
-
 
 
 def update_summarized_article(article):
     pass
+
 
 
 
