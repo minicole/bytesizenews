@@ -31,8 +31,13 @@ def save_article_unsummarized(title, author, url, source, description, url_to_im
     if article is None:
         article = Article(title=title, author=author, url=url, source=source, description=description,
                           url_to_image=url_to_image, published_at=published_at)
-        article.save()
-        log.info(("Article:{0} saved into db").format(article))
+
+        try:
+            article.save()
+            log.info(("Article:{0} saved into db").format(article))
+        except ValidationError:
+            log.info(("Article:{0} URL: {1} failed to be saved into db").format(title, url))
+
     else:
         log.info(("Article:{0} already exists in db").format(article))
 
@@ -59,5 +64,10 @@ def save_source(id, category, name, description, language, country, sortBysAvail
     if source is None:
         source = Source(source_id=id, source_name=name, category=category, description=description, language=language,
                         country=country, sortBysAvailable=sortBysAvailable, urlsToLogos=urlsToLogos)
-        source.save()
-        log.info("New Source:{0} saved into db".format(source))
+
+        try:
+            source.save()
+            log.info("New Source:{0} saved into db".format(source))
+        except ValidationError:
+            log.info("New Source:{0} failed to be saved into db".format(id))
+
