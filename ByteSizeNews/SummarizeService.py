@@ -1,14 +1,17 @@
 # Load url from database
 
 from django.conf import settings
+from ByteSizeNews.DataAccessManagement import *
+
 import requests
 # import DAM
 
 apirequestheader = "http://api.smmry.com/&SM_API_KEY="+settings.SMMRY_KEY+"&SM_KEYWORD_COUNT=5&SM_WITH_BREAK"
 
-def summarize(url, numberOfSentances=7):
+
+def summarize(article, numberOfSentances=7):
     # Build API request
-    apirequest = apirequestheader+"&SM_LENGTH="+str(numberOfSentances)+"&SM_URL="+url
+    apirequest = apirequestheader+"&SM_LENGTH="+str(numberOfSentances)+"&SM_URL="+article.url
     print(apirequest)
     r = requests.get(apirequest)
     jsonresponse = r.json()

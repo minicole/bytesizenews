@@ -1,5 +1,7 @@
 from ByteSizeNews.models import *
+from mongoengine.queryset.visitor import Q
 import logging
+import json
 
 log = logging.getLogger(__name__)
 
@@ -7,10 +9,48 @@ def get_articles():
     return [Article(title="article1", author="author1", url="url1").to_json(),
             Article(title="article2", author="author2", url="url2").to_json()]
 
+def get_all_categories():
+    return ["business", "entertainment", "gaming", "general",
+            "music", "politics", "science-and-nature", "sport", "technology"]
+
+def get_article_by_url(url):
+    """
+    Return article object
+    Summarize here first
+    :param url: 
+    :return: 
+    """
+    try:
+        article = Article.objects.get(url=url)
+        return article.to_json()
+
+    except Article.DoesNotExist:
+        return json.dumps("{'status':'Does not exist Error'}")
 
 def get_articles_from_category(category):
-    return [Article(title="article1cat1", author="author1", url="url1").to_json(),
-            Article(title="article2cat1", author="author2", url="url2").to_json()]
+    """
+    
+    :param category: Possible options: business, entertainment, gaming, general, 
+            music, politics, science-and-nature, sport, technology.
+    :return: list of all articles to json
+    """
+
+    # Get all sources with that category
+    source_list =  Source.objects.filter(Q(description__contains=category) | Q(category=category))
+    if len(source_list) > 0:
+        article_list = Article.objects.filter(source__in=source_list)
+
+        if len(article_list):
+            return article_list.as_small_json()
+
+        # return [Article(title="article1cat1", author="author1", url="url1").to_json(),
+        #     Article(title="article2cat1", author="author2", url="url2").to_json()]
+
+
+
+def update_summarized_article(article):
+    pass
+
 
 
 def save_article_unsummarized(title, author, url, source, description, url_to_image, published_at):

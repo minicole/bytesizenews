@@ -20,6 +20,16 @@ class Source(Document):
     def __str__(self):
         return "{0}".format(self.source_id)
 
+    def as_small_json(self):
+        return dict(
+            source_id=self.source_id,
+            category=self.category,
+            source_name=self.source_name,
+            language=self.language,
+            country=self.country,
+            urlsToLogs=self.urlsToLogos[2] # Hard coded to medium? Or large For now
+        )
+
 
 class Article(Document):
     title = StringField()
@@ -38,3 +48,16 @@ class Article(Document):
 
     def __str__(self):
         return "{0}:{1}".format(self.title, self.url)
+
+    def as_small_json(self):
+        """
+        Simplfied model of the full model
+        :return: 
+        """
+        return dict(
+            url=self.url,
+            url_to_image=self.url_to_image,
+            published_at=self.published_at.isoformat(),
+            source=self.source.as_small_json(),
+            author=self.author,
+            title=self.title)
