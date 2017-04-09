@@ -25,7 +25,7 @@ def save_article_unsummarized(title, author, url, type, source, description,url_
     """
     try:
         article = Article.objects.get(url=url)
-    except RealEstateListing.DoesNotExist:
+    except Article.DoesNotExist:
         article = None
 
     if not article:
