@@ -32,7 +32,7 @@ NEWS_KEY = keys['<<NewsAPIKey>>']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'ec2-34-205-85-30.compute-1.amazonaws.com','.bytesizenews.net']
+ALLOWED_HOSTS = ['localhost', 'ec2-34-205-85-30.compute-1.amazonaws.com', 'bytesizenews.net', 'www.bytesizenews.net']
 
 
 # Application definition
