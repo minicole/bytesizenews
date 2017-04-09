@@ -10,8 +10,8 @@ TIME_THRESHOLD_CONSTANT_DAYS = 0
 TIME_THRESHOLD_CONSTANT_HOURS = 5
 
 def get_articles():
-    return [Article(title="article1", author="author1", url="url1").to_json(),
-            Article(title="article2", author="author2", url="url2").to_json()]
+    return get_articles_from_category("")
+
 
 def get_all_categories():
     return ["business", "entertainment", "gaming", "general",

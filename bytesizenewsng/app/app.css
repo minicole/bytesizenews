@@ -37,3 +37,16 @@
   height:300px;
   background-position: center center;
 }
+
+.bs-docs-header {
+  padding-top: 50px;
+  padding-bottom: 15px;
+}
+
+.navbar-fixed-top {
+  background: white;
+}
+.navbar-fixed-bottom {
+  left: inherit;
+  right: 5px;
+}
