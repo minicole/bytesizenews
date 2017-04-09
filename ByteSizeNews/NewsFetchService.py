@@ -30,10 +30,10 @@ def fetch_latest_news(source="the-next-web"):
 
     for article in articles:
         try:
-            publishDate = dateutil.parser.parse(article['publishedAt'])
+            publishedDate = dateutil.parser.parse(article['publishedAt'])
         except:
             # Put current
-            publishDate = datetime.now(pytz.utc)
+            publishedDate = datetime.now(pytz.utc)
         save_article_unsummarized(article['title'], article['author'], article['url'], "N/A",jsonresponse['source'], article['description'], article['urlToImage'], publishedDate)
         #Ony save once per call
         if DEBUG:
