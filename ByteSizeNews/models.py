@@ -9,7 +9,7 @@ class Rating(Document):
 
 class Source(Document):
     category = StringField()
-    id = StringField(unique=True, required=True, primary_key=True)
+    source_id = StringField(unique=True, required=True)
     name = StringField()
     description = StringField()
     language = StringField()
@@ -18,7 +18,7 @@ class Source(Document):
     urlsToLogos = ListField(StringField())
 
     def __str__ (self):
-        return "{0}".format(self.name)
+        return "{0}".format(self.source_id)
 
 
 class Article(Document):
