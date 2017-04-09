@@ -28,8 +28,14 @@ def get_article_by_id(article_id):
     try:
         article = Article.objects.get(id=article_id)
 
-        if article.is_summarized:
-            article = update_summarized_article(article)
+        if not article.is_summarized:
+            sum_article = update_summarized_article(article)
+            if sum_article is not None:
+                article = sum_article
+                log.info(("Article:{0} sumamrized").format(article))
+            else:
+                log.info(("Article:{0}: failed to be summarized").format(article))
+
 
         return article.to_json()
 

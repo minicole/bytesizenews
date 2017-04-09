@@ -19,12 +19,14 @@ def summarize(article, numberOfSentances=7):
     summarizedContent = jsonresponse['sm_api_content'].split("[BREAK]")
 
     # Check the error response here
-    article.summary_sentences = summarizedContent
-    article.keywords = keywordArray
-    article.is_summarized = True
-    article.save()
-
-    return article
+    try:
+        article.summary_sentences = summarizedContent
+        article.keywords = keywordArray
+        article.is_summarized = True
+        article.save()
+        return article
+    except:
+        return None
     # print("Keywords:"+",".join(keywordArray))
     # print("Title:"+newsTitle)
     # print("Characters:"+charCount)
