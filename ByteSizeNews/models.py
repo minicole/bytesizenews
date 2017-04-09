@@ -9,7 +9,7 @@ class Rating(Document):
 
 class Source(Document):
     category = StringField()
-    id = StringField(unique=True, required=True)
+    id = StringField(unique=True, required=True, primary_key=True)
     name = StringField()
     description = StringField()
     language = StringField()
