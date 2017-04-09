@@ -29,7 +29,7 @@ angular.module('myApp.article_list', ['ngRoute'])
         $http.get(url,config)
             .then(function(response) {
                 console.log(response);
-                var articlesParsed = JSON.parse(response.data);
+                var articlesParsed = response.data;
                 var articles = [];
                 for (var i = 0; i < articlesParsed.length; i++) {
                     var article = articlesParsed[i];

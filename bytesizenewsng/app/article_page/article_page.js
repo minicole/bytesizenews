@@ -20,7 +20,7 @@ angular.module('myApp.article_page', ['ngRoute'])
         $http.get(url, config)
             .then(function (response) {
                 console.log(response);
-                var articleParsed = JSON.parse(response.data);
+                var articleParsed = response.data;
 
                 articleParsed.rated = articleParsed.rating.find(nb_sentences == articleParsed.summary_sentences.length);
                 $scope.article = articleParsed;
