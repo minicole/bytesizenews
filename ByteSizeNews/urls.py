@@ -22,4 +22,6 @@ urlpatterns = [
     url(r'^articles/(?P<category>[a-zA-Z]+)/', views.get_articles_from_category),
     url(r'^articles/',views.get_all_articles),
     url(r'^article/(?P<articleID>[0-9a-zA-Z]+)/', views.get_article),
+    url(r'^thumbsup/(?P<articleID>[0-9a-zA-Z]+)/(?P<nbSentences>[0-9]+)/', views.thumbsUp),
+    url(r'^thumbsdown/(?P<articleID>[0-9a-zA-Z]+)/(?P<nbSentences>[0-9]+)/', views.thumbsDown),
 ]

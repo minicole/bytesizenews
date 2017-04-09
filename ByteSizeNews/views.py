@@ -40,8 +40,31 @@ def get_articles_from_category(request, category):
 @csrf_exempt
 def get_article(request, articleID):
     article = DataAccessManagement.get_article_by_id(articleID)
-
     resp = HttpResponse(article)
+    resp.setdefault("Access-Control-Allow-Origin", "*")
+    resp.setdefault('Access-Control-Allow-Methods', 'GET, POST')
+    resp.setdefault("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token")
+
+    return resp
+
+
+@csrf_exempt
+def thumbsUp(request, articleID, nbSentences):
+    confirmation = DataAccessManagement.addRating(True, articleID, nbSentences)
+
+    resp = HttpResponse(confirmation)
+    resp.setdefault("Access-Control-Allow-Origin", "*")
+    resp.setdefault('Access-Control-Allow-Methods', 'GET, POST')
+    resp.setdefault("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token")
+
+    return resp
+
+
+@csrf_exempt
+def thumbsDown(request, articleID, nbSentences):
+    confirmation = DataAccessManagement.addRating(False, articleID, nbSentences)
+
+    resp = HttpResponse(confirmation)
     resp.setdefault("Access-Control-Allow-Origin", "*")
     resp.setdefault('Access-Control-Allow-Methods', 'GET, POST')
     resp.setdefault("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token")

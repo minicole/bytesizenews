@@ -7,13 +7,13 @@
     </div>
     <div class="col-md-8">
         <span ng-repeat="sentence in article.summary_sentences">{{ sentence }} </span>
+        <div class="row ratings">
+            <div class="col-md-3">Rate this summary:</div>
+            <div class="col-md-1" ng-click="rateThumbsUp()">&#x1F44D; {{ article.rated.nb_thumbs_up }}</div>
+            <div class="col-md-1" ng-click="rateThumbsDown()">&#x1F44E; {{ article.rated.nb_thumbs_down }}</div>
+        </div>
     </div>
     <div class="col-md-4">
         <img src="{{ article.url_to_image }}" style="max-width:100%"/>
-    </div>
-    <div class="row">
-        <div class="col-md-2">Rate this summary:</div>
-        <div class="col-md-1">&#x1F44D; {{ article.rated.nb_thumbs_up }}</div>
-        <div class="col-md-1">&#x1F44E; {{ article.rated.nb_thumbs_down }}</div>
     </div>
 </div>

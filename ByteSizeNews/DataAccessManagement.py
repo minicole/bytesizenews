@@ -134,3 +134,41 @@ def save_source(id, category, name, description, language, country, sortBysAvail
         except ValidationError:
             log.info("New Source:{0} failed to be saved into db".format(id))
 
+
+def addRating(isUp, article_id, nbSentences):
+    """
+    Increments the number of thumbs up or down for an article for a given number of sentences
+    :param isUp:
+    :param article_id:
+    :param nbSentences:
+    :return:
+    """
+    try:
+        article = Article.objects.get(id=article_id)
+
+        rating = article.ratings.get(nb_sentences=nbSentences)
+        if rating:
+            if isUp:
+                rating.nb_thumbs_up += 1
+                log.info("Number of thumbs up incremented for article " + article_id + " for " + nbSentences)
+            else:
+                rating.nb_thumbs_down += 1
+                log.info("Number of thumbs down incremented for article " + article_id + " for " + nbSentences)
+
+            rating.save()
+        else:
+            if isUp:
+                rating = Rating(nb_thumbs_up=1, nb_thumbs_down=0, nb_sentences=nbSentences)
+                log.info("Number of thumbs up incremented for article " + article_id + " for " + nbSentences)
+            else:
+                rating = Rating(nb_thumbs_up=0, nb_thumbs_down=1, nb_sentences=nbSentences)
+                log.info("Number of thumbs down incremented for article " + article_id + " for " + nbSentences)
+
+            rating.save()
+            article.ratings.append(rating)
+            article.save()
+
+        return json.dumps("{'status':'Done!'}")
+
+    except Article.DoesNotExist:
+        return json.dumps("{'status':'Does not exist Error'}")
