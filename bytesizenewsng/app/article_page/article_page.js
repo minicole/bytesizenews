@@ -22,7 +22,19 @@ angular.module('myApp.article_page', ['ngRoute'])
                 console.log(response);
                 var articleParsed = response.data;
 
-                articleParsed.rated = articleParsed.rating.find(nb_sentences == articleParsed.summary_sentences.length);
+                if (articleParsed.ratings.length > 0) {
+                    articleParsed.rated = articleParsed.ratings.find(function (currentValue) {
+                        return currentValue.nb_sentences = articleParsed.summary_sentences.length;
+                    });
+                } else {
+                    articleParsed.rated = {
+                        nb_thumbs_up : 0,
+                        nb_thumbs_down : 0
+                    };
+                }
+
+                var date = Date(articleParsed.published_at);
+                articleParsed.date = date.substring(0,date.lastIndexOf(":") + 3);
                 $scope.article = articleParsed;
             });
     }]);
