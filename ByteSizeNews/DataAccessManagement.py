@@ -36,12 +36,13 @@ def get_articles_from_category(category):
     """
 
     # Get all sources with that category
-    source_list =  Source.objects.filter(Q(description__contains=category) | Q(category=category))
+    source_list = Source.objects.filter(Q(description__contains=category) | Q(category=category))
     if len(source_list) > 0:
         article_list = Article.objects.filter(source__in=source_list)
 
         if len(article_list):
-            return article_list.as_small_json()
+            return_json_list = [article.as_small_json() for article in article_list]
+            return json.dumps(return_json_list)
 
         # return [Article(title="article1cat1", author="author1", url="url1").to_json(),
         #     Article(title="article2cat1", author="author2", url="url2").to_json()]
