@@ -17,7 +17,7 @@ def get_all_categories():
     return ["business", "entertainment", "gaming", "general",
             "music", "politics", "science-and-nature", "sport", "technology"]
 
-def get_article_by_url(url):
+def get_article_by_id(article_id):
     """
     Return article object
     Summarize here first
@@ -25,7 +25,11 @@ def get_article_by_url(url):
     :return: 
     """
     try:
-        article = Article.objects.get(url=url)
+        article = Article.objects.get(id=article_id)
+
+        if article.is_summarized:
+            update_summarized_article(article)
+
         return article.to_json()
 
     except Article.DoesNotExist:
@@ -37,6 +41,7 @@ def get_articles_from_category(category, time_delta_ago=timedelta(days= TIME_THR
     
     :param category: Possible options: business, entertainment, gaming, general, 
             music, politics, science-and-nature, sport, technology.
+    :param time_delta_ago: Time to go back
     :return: list of all articles to json
     """
 
