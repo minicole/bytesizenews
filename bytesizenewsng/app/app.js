@@ -5,7 +5,9 @@ angular.module('myApp', [
   'ngRoute',
   'myApp.article_page',
   'myApp.article_list',
-  'myApp.version'
+  'myApp.version',
+    'ngProgress',
+    'rzModule'
 ]).
 config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
   $locationProvider.hashPrefix('!');

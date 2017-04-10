@@ -22,7 +22,11 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <link href="/favicon.ico" rel="shortcut icon">
+
+    <link rel="stylesheet" href="ngProgress.css">
+    <link rel="stylesheet" href="rzslider.css">
     <link rel="stylesheet" href="app.css">
+
 </head>
 <body>
 <div class="bs-docs-header" id="content" tabindex="-1">
@@ -31,16 +35,16 @@
             <img src="static/bytesizenewslogo.png" class="col-md-2"/>
             <div class="col-md-10">
                 <h1>Byte Size News</h1>
-                <p>News for #Millenials</p>
+                <p>News for #millenials. One Stop, Computer Summarized Articles. </p>
             </div>
         </div>
     </div>
 </div>
-<header class="bs-docs-nav navbar navbar-fixed-top" id="top">
+<header class="bs-docs-nav navbar navbar-fixed-top" id="top" bs-active-link>
     <div class="container">
         <div class="navbar-header">
             <button aria-controls="bs-navbar" aria-expanded="false" class="collapsed navbar-toggle"
-                    data-target="#bs-navbar" data-toggle="collapse" type="button"><span class="sr-only">Toggle navigation</span>
+            data-target="#bs-navbar" data-toggle="collapse" type="button"><span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span></button>
             <a href="#!/article_list" class="navbar-brand">All Categories</a></div>
         <nav class="collapse navbar-collapse" id="bs-navbar">
@@ -64,7 +68,7 @@
   <![endif]-->
 
 <div ng-view class="container"></div>
-<footer class="navbar navbar-fixed-bottom">Byte Size News &copy; 2017 v<span app-version></span> - <a href="newsapi.org">Powered by NewsAPI</a></footer>
+<footer class="navbar navbar-fixed-bottom">Byte Size News &copy; 2017 v<span app-version></span> - <a href="http://newsapi.org">Powered by NewsAPI</a></footer>
 
 <!-- In production use:
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
@@ -74,8 +78,12 @@
 <script src="app.js"></script>
 <script src="article_page/article_page.js"></script>
 <script src="article_list/article_list.js"></script>
+<script src="bs-active.js"></script>
 <script src="components/version/version.js"></script>
 <script src="components/version/version-directive.js"></script>
 <script src="components/version/interpolate-filter.js"></script>
+<script src="/components/ngProgress/ngProgress.js"></script>
+<script src="/components/rzslider/rzslider.js"></script>
+
 </body>
 </html>

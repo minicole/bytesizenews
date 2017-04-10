@@ -36,6 +36,7 @@
 .article-background-square {
   height:300px;
   background-position: center center;
+    border: white 5px solid;
 }
 
 .bs-docs-header {

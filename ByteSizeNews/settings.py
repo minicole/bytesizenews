@@ -28,6 +28,7 @@ with open('private.keys') as json_keys:
 SECRET_KEY = keys['<<DjangoSecretKey>>']
 SMMRY_KEY = keys['<<SMMRYKey>>']
 NEWS_KEY = keys['<<NewsAPIKey>>']
+MCS_TEXT_KEY = keys['<<MCStextKey>>']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

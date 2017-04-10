@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('myApp.article_list', ['ngRoute'])
+angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
 
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/article_list/:category?', {
@@ -9,7 +9,9 @@ angular.module('myApp.article_list', ['ngRoute'])
         });
     }])
 
-    .controller('article_listCtrl', ['$scope', '$http', '$route', '$window', '$location', function ($scope, $http, $route, $window, $location) {
+    .controller('article_listCtrl', ['$scope', '$http', '$route', '$window', '$location', 'ngProgressFactory', function ($scope, $http, $route, $window, $location, ngProgressFactory) {
+        $scope.progressbar = ngProgressFactory.createInstance();
+        $scope.progressbar.start();
         var randomColor = function() {
             var letters = '0123456789ABCDEF';
             var color = '#';
@@ -40,7 +42,7 @@ angular.module('myApp.article_list', ['ngRoute'])
                     }
                     articles.push(article);
                 }
-
+                $scope.progressbar.complete();
                 $scope.articles = articles;
             });
 

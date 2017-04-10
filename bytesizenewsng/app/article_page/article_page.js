@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('myApp.article_page', ['ngRoute'])
+angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
 
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/article_page/:articleid?', {
@@ -9,7 +9,31 @@ angular.module('myApp.article_page', ['ngRoute'])
         });
     }])
 
-    .controller('article_pageCtrl', ['$route', '$http', '$scope', function ($route, $http, $scope) {
+    .controller('article_pageCtrl', ['$route', '$http', '$scope', 'ngProgressFactory', function ($route, $http, $scope, ngProgressFactory) {
+        $scope.progressbar = ngProgressFactory.createInstance();
+        $scope.progressbar.start();
+        $scope.slider = {
+              value: 50,
+              options: {
+                floor: 0,
+                ceil: 100,
+                  readOnly: true,
+                  showSelectionBar: true,
+                  selectionBarGradient: {
+                      from: 'red',
+                      to: 'green'
+                  },
+                  getPointerColor: function(value) {
+                    if (value <= 25)
+                        return 'red';
+                    if (value <= 50)
+                        return 'orange';
+                    if (value <= 75)
+                        return 'yellow';
+                    return 'green';
+                }
+              }
+            };
         var config = {headers: {}};
         $scope.rated = false;
         var url = 'http://bytesizenews.net:8080/article/';
@@ -34,8 +58,11 @@ angular.module('myApp.article_page', ['ngRoute'])
                     };
                 }
 
+                $scope.slider.value = Math.floor(articleParsed.sentiment * 100);
+
                 var date = Date(articleParsed.published_at);
                 articleParsed.date = date.substring(0, date.lastIndexOf(":") + 3);
+                $scope.progressbar.complete();
                 $scope.article = articleParsed;
             });
 
