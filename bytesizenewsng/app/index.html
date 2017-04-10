@@ -22,7 +22,19 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <link href="/favicon.ico" rel="shortcut icon">
+
+    <link rel="stylesheet" href="ngProgress.css">
+    <link rel="stylesheet" href="rzslider.css">
     <link rel="stylesheet" href="app.css">
+
+    <script>
+        $(".nav a").on("click", function(){
+           $(".nav").find(".active").removeClass("active");
+           $(this).parent().addClass("active");
+        });
+    </script>
+
+
 </head>
 <body>
 <div class="bs-docs-header" id="content" tabindex="-1">
@@ -40,7 +52,7 @@
     <div class="container">
         <div class="navbar-header">
             <button aria-controls="bs-navbar" aria-expanded="false" class="collapsed navbar-toggle"
-                    data-target="#bs-navbar" data-toggle="collapse" type="button"><span class="sr-only">Toggle navigation</span>
+            data-target="#bs-navbar" data-toggle="collapse" type="button"><span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span></button>
             <a href="#!/article_list" class="navbar-brand">All Categories</a></div>
         <nav class="collapse navbar-collapse" id="bs-navbar">
@@ -77,5 +89,7 @@
 <script src="components/version/version.js"></script>
 <script src="components/version/version-directive.js"></script>
 <script src="components/version/interpolate-filter.js"></script>
+<script src="/components/ngProgress/ngProgress.js"></script>
+<script src="/components/rzslider/rzslider.js"></script>
 </body>
 </html>
