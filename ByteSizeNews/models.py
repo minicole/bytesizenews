@@ -5,6 +5,8 @@ class Rating(Document):
     nb_sentences = IntField()
     nb_thumbs_up = IntField()
     nb_thumbs_down = IntField()
+    nb_views = IntField()
+    nb_summarized_chars = IntField()
 
 
 class Source(Document):
@@ -27,7 +29,7 @@ class Source(Document):
             source_name=self.source_name,
             language=self.language,
             country=self.country,
-            urlsToLogs=self.urlsToLogos[2] # Hard coded to medium? Or large For now
+            urlsToLogos=self.urlsToLogos[2] # Hard coded to medium? Or large For now
         )
 
 
@@ -44,7 +46,7 @@ class Article(Document):
     ratings = ListField(ReferenceField(Rating))
     keywords = ListField(StringField())
     sentiment = FloatField()
-    views = IntField()
+    nb_original_chars = IntField()
 
     def __str__(self):
         return "{0}:{1}".format(self.title, self.url)
@@ -61,4 +63,5 @@ class Article(Document):
             published_at=self.published_at.isoformat(),
             source=self.source.as_small_json(),
             author=self.author,
-            title=self.title)
+            title=self.title,
+            description=self.description)

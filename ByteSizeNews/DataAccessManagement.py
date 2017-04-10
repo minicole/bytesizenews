@@ -10,19 +10,32 @@ log = logging.getLogger(__name__)
 TIME_THRESHOLD_CONSTANT_DAYS = 0
 TIME_THRESHOLD_CONSTANT_HOURS = 5
 
+DEFAULT_LANGUAGES_LIST = ["en"]
+
+
 def get_articles():
-    return get_articles_from_category("")
+    return get_articles_from_category()
 
 
 def get_all_categories():
-    return ["business", "entertainment", "gaming", "general",
-            "music", "politics", "science-and-nature", "sport", "technology"]
+    return Source.objects.distinct(field='category')
+    # return ["business", "entertainment", "gaming", "general",
+    #         "music", "politics", "science-and-nature", "sport", "technology"]
+
+
+def get_all_languages():
+    return Source.objects.distinct(field='language')
+
+
+def get_all_countries():
+    return Source.objects.distinct(field='country')
+
 
 def get_article_by_id(article_id):
     """
     Return article object
     Summarize here first
-    :param url: 
+    :param article_id: 
     :return: 
     """
     try:
@@ -32,30 +45,49 @@ def get_article_by_id(article_id):
             sum_article = update_summarized_article(article)
             if sum_article is not None:
                 article = sum_article
-                log.info(("Article:{0} sumamrized").format(article))
+                log.info(("Article:{0} summarized").format(article))
             else:
                 log.info(("Article:{0}: failed to be summarized").format(article))
 
+        elif needs_to_be_resummarized(article):
+            sum_article = update_summarized_article(article, len(article.summary_sentences)+1)
+            if sum_article is not None:
+                article = sum_article
+                log.info(("Article:{0} re-summarized").format(article))
+            else:
+                log.info(("Article:{0}: failed to be re-summarized").format(article))
 
+        # Increment views in latest rating object
+        article.ratings[-1].nb_views += 1
+        article.save()
         return article.to_json()
 
     except Article.DoesNotExist:
         return json.dumps("{'status':'Does not exist Error'}")
 
 
-def get_articles_from_category(category, time_delta_ago=timedelta(days= TIME_THRESHOLD_CONSTANT_DAYS,hours=TIME_THRESHOLD_CONSTANT_HOURS)):
+# TODO: Replace category with a list
+def get_articles_from_category(category="general",
+                               time_delta_ago=timedelta(days=TIME_THRESHOLD_CONSTANT_DAYS,
+                                                        hours=TIME_THRESHOLD_CONSTANT_HOURS),
+                               languages=DEFAULT_LANGUAGES_LIST,
+                               countries=get_all_countries()):
     """
     
     :param category: Possible options: business, entertainment, gaming, general, 
             music, politics, science-and-nature, sport, technology.
     :param time_delta_ago: Time to go back
+    :param languages: Array of languages to filter for
+    :param countries: Array of source countries to filter for
     :return: list of all articles to json
     """
 
     time_threshold = datetime.now() - time_delta_ago
 
-    # Get all sources with that category
+    # Get all sources with that category, language and country
     source_list = Source.objects.filter(Q(description__contains=category) | Q(category=category))
+
+    source_list = source_list.filter(language__in=languages).filter(country__in=countries)
 
     if len(source_list) > 0:
         article_list = Article.objects.filter(source__in=source_list)\
@@ -67,11 +99,8 @@ def get_articles_from_category(category, time_delta_ago=timedelta(days= TIME_THR
             return json.dumps(return_json_list)
 
 
-
-def update_summarized_article(article):
-    return summarize(article)
-
-
+def update_summarized_article(article, nb_sentances=7):
+    return summarize(article, nb_sentances)
 
 
 def save_article_unsummarized(title, author, url, source, description, url_to_image, published_at):
@@ -145,9 +174,14 @@ def addRating(isUp, article_id, nbSentences):
     """
     try:
         article = Article.objects.get(id=article_id)
-        rating = article.ratings.objects.get(nb_sentences=nbSentences)
+        rating = None
 
-        if rating:
+        for ratingCandidate in article.ratings:
+            if rating.nb_sentences == nbSentences:
+                rating = ratingCandidate
+                break
+
+        if rating is not None:
             if isUp:
                 rating.nb_thumbs_up += 1
                 log.info("Number of thumbs up incremented for article " + article_id + " for " + nbSentences)
@@ -157,11 +191,12 @@ def addRating(isUp, article_id, nbSentences):
 
             rating.save()
         else:
+            # Must have been summarized without a rating object
             if isUp:
-                rating = Rating(nb_thumbs_up=1, nb_thumbs_down=0, nb_sentences=nbSentences)
+                rating = Rating(nb_thumbs_up=1, nb_thumbs_down=0, nb_sentences=nbSentences, nb_views=0)
                 log.info("Number of thumbs up incremented for article " + article_id + " for " + nbSentences)
             else:
-                rating = Rating(nb_thumbs_up=0, nb_thumbs_down=1, nb_sentences=nbSentences)
+                rating = Rating(nb_thumbs_up=0, nb_thumbs_down=1, nb_sentences=nbSentences, nb_views=0)
                 log.info("Number of thumbs down incremented for article " + article_id + " for " + nbSentences)
 
             rating.save()
@@ -172,3 +207,18 @@ def addRating(isUp, article_id, nbSentences):
 
     except Article.DoesNotExist:
         return json.dumps("{'status':'Does not exist Error'}")
+
+
+def needs_to_be_resummarized(article):
+    """
+    Checks ratings/views to see if there needs to be resummarize
+    :param article: 
+    :return: 
+    """
+
+    # get latest rating
+    rating = article.ratings[-1]
+    if rating.nb_thumbs_down/rating.nb_thumbs_up > 3.0:
+        return True
+    else:
+        return False
