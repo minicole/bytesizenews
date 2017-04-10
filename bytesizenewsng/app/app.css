@@ -59,3 +59,15 @@
 .thumbs {
   cursor: pointer;
 }
+
+.bottom-right {
+    float: right;
+}
+
+.logo {
+    max-width:50%;
+}
+
+.icon-bar {
+    background: red;
+}
