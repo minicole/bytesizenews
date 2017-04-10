@@ -12,6 +12,7 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
     .controller('article_pageCtrl', ['$route', '$http', '$scope', 'ngProgressFactory', function ($route, $http, $scope, ngProgressFactory) {
         $scope.progressbar = ngProgressFactory.createInstance();
         $scope.progressbar.start();
+        $scope.data_loaded = false;
         $scope.slider = {
               value: 50,
               options: {
@@ -58,11 +59,16 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
                     };
                 }
 
+                if (articleParsed.summary_sentences[articleParsed.summary_sentences.length - 1] === "") {
+                    articleParsed.summary_sentences.pop();
+                }
+
                 $scope.slider.value = Math.floor(articleParsed.sentiment * 100);
 
                 var date = Date(articleParsed.published_at);
                 articleParsed.date = date.substring(0, date.lastIndexOf(":") + 3);
                 $scope.progressbar.complete();
+                $scope.data_loaded = true;
                 $scope.article = articleParsed;
             });
 

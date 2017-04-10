@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row" ng-show="data_loaded">
     <div class="col-md-12">
         <h1>{{ article.title }}</h1>
         <h4>{{ article.author }}</h4>
@@ -6,7 +6,9 @@
         <h5>{{ article.date }}</h5>
     </div>
     <div class="col-md-8">
-        <span ng-repeat="sentence in article.summary_sentences">{{ sentence }} </span>
+        <ul>
+            <li ng-repeat="sentence in article.summary_sentences">{{ sentence }} </li>
+        </ul>
         <div class="row ratings">
             <div class="col-md-3">Rate this summary:</div>
             <div class="col-md-1"><span class="thumbs" ng-click="rateThumbsUp()">&#x1F44D;</span> {{ article.rated.nb_thumbs_up }}</div>

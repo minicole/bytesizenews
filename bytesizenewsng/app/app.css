@@ -59,3 +59,7 @@
 .thumbs {
   cursor: pointer;
 }
+
+.bottom-right {
+    float: right;
+}

@@ -40,6 +40,8 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
                     } else {
                         article.background = "background-color: " + randomColor();
                     }
+                    var d = new Date(article.published_at);
+                    article.hours = Math.floor((Date.now() - d.getTime()) / 1000 / 60 / 60);
                     articles.push(article);
                 }
                 $scope.progressbar.complete();
