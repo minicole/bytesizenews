@@ -1,1 +1,19 @@
-<p>This is the partial for view 1.</p>
+<div class="row">
+    <div class="col-md-12">
+        <h1>{{ article.title }}</h1>
+        <h4>{{ article.author }}</h4>
+        <h3>{{ article.source.source_name }}</h3>
+        <h5>{{ article.date }}</h5>
+    </div>
+    <div class="col-md-8">
+        <span ng-repeat="sentence in article.summary_sentences">{{ sentence }} </span>
+        <div class="row ratings">
+            <div class="col-md-3">Rate this summary:</div>
+            <div class="col-md-1"><span class="thumbs" ng-click="rateThumbsUp()">&#x1F44D;</span> {{ article.rated.nb_thumbs_up }}</div>
+            <div class="col-md-1"><span class="thumbs" ng-click="rateThumbsDown()">&#x1F44E;</span> {{ article.rated.nb_thumbs_down }}</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <img src="{{ article.url_to_image }}" style="max-width:100%"/>
+    </div>
+</div>

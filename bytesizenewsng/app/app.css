@@ -43,10 +43,18 @@
   padding-bottom: 15px;
 }
 
+.ratings {
+  padding-top: 25px;
+}
+
 .navbar-fixed-top {
   background: white;
 }
 .navbar-fixed-bottom {
   left: inherit;
   right: 5px;
+}
+
+.thumbs {
+  cursor: pointer;
 }
