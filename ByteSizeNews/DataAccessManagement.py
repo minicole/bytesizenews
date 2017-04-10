@@ -227,9 +227,8 @@ def needs_to_be_resummarized(article):
 
     rating_thumbs_up = rating.nb_thumbs_up
 
-    if rating.nb_thumbs_up == 0 and rating.nb_thumbs_down>0:
+    if rating.nb_thumbs_up == 0:
         rating_thumbs_up = 1
-
 
     if rating.nb_thumbs_down/rating_thumbs_up > 3.0:
         return True
