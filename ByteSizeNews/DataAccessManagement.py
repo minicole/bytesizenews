@@ -35,7 +35,7 @@ def get_article_by_id(article_id):
     """
     Return article object
     Summarize here first
-    :param url: 
+    :param article_id: 
     :return: 
     """
     try:
@@ -49,6 +49,9 @@ def get_article_by_id(article_id):
             else:
                 log.info(("Article:{0}: failed to be summarized").format(article))
 
+        elif needs_to_be_resummarized(article):
+            sum_article = update_summarized_article(article, len(article.summary_sentences)+1)
+
         # Increment views in latest rating object
         article.ratings[-1].nb_views += 1
         article.save()
@@ -58,6 +61,7 @@ def get_article_by_id(article_id):
         return json.dumps("{'status':'Does not exist Error'}")
 
 
+# TODO: Replace category with a list
 def get_articles_from_category(category="general",
                                time_delta_ago=timedelta(days=TIME_THRESHOLD_CONSTANT_DAYS,
                                                         hours=TIME_THRESHOLD_CONSTANT_HOURS),
@@ -90,11 +94,8 @@ def get_articles_from_category(category="general",
             return json.dumps(return_json_list)
 
 
-
-def update_summarized_article(article):
-    return summarize(article)
-
-
+def update_summarized_article(article, nb_sentances=7):
+    return summarize(article, nb_sentances)
 
 
 def save_article_unsummarized(title, author, url, source, description, url_to_image, published_at):
@@ -168,9 +169,14 @@ def addRating(isUp, article_id, nbSentences):
     """
     try:
         article = Article.objects.get(id=article_id)
-        rating = article.ratings.objects.get(nb_sentences=nbSentences)
+        rating = None
 
-        if rating:
+        for ratingCandidate in article.ratings:
+            if rating.nb_sentences == nbSentences:
+                rating = ratingCandidate
+                break
+
+        if rating is not None:
             if isUp:
                 rating.nb_thumbs_up += 1
                 log.info("Number of thumbs up incremented for article " + article_id + " for " + nbSentences)
@@ -180,11 +186,12 @@ def addRating(isUp, article_id, nbSentences):
 
             rating.save()
         else:
+            # Must have been summarized without a rating object
             if isUp:
-                rating = Rating(nb_thumbs_up=1, nb_thumbs_down=0, nb_sentences=nbSentences)
+                rating = Rating(nb_thumbs_up=1, nb_thumbs_down=0, nb_sentences=nbSentences, nb_views=0)
                 log.info("Number of thumbs up incremented for article " + article_id + " for " + nbSentences)
             else:
-                rating = Rating(nb_thumbs_up=0, nb_thumbs_down=1, nb_sentences=nbSentences)
+                rating = Rating(nb_thumbs_up=0, nb_thumbs_down=1, nb_sentences=nbSentences, nb_views=0)
                 log.info("Number of thumbs down incremented for article " + article_id + " for " + nbSentences)
 
             rating.save()
@@ -195,3 +202,18 @@ def addRating(isUp, article_id, nbSentences):
 
     except Article.DoesNotExist:
         return json.dumps("{'status':'Does not exist Error'}")
+
+
+def needs_to_be_resummarized(article):
+    """
+    Checks ratings/views to see if there needs to be resummarize
+    :param article: 
+    :return: 
+    """
+
+    # get latest rating
+    rating = article.ratings[-1]
+    if rating.nb_thumbs_down/rating.nb_thumbs_up > 3.0:
+        return True
+    else:
+        return False

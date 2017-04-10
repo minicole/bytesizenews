@@ -7,7 +7,7 @@ import requests
 apirequestheader = "http://api.smmry.com/&SM_API_KEY="+settings.SMMRY_KEY+"&SM_KEYWORD_COUNT=5&SM_WITH_BREAK"
 
 
-def summarize(article, numberOfSentances=7):
+def summarize(article, numberOfSentances):
     # Build API request
     apirequest = apirequestheader+"&SM_LENGTH="+str(numberOfSentances)+"&SM_URL="+article.url
     r = requests.get(apirequest)
@@ -26,7 +26,8 @@ def summarize(article, numberOfSentances=7):
         article.is_summarized = True
 
         # Create new rating object and set to 0/0/0 and save
-        rating = Rating(nb_sentences=numberOfSentances, nb_thumbs_down=0, nb_thumbs_up=0, nb_views=0)
+        rating = Rating(nb_sentences=numberOfSentances, nb_thumbs_down=0, nb_thumbs_up=0, nb_views=0,
+                        nb_summarized_chars=charCount)
         rating.save()
         article.ratings.append(rating)
         article.save()

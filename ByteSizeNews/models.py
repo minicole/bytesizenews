@@ -6,6 +6,7 @@ class Rating(Document):
     nb_thumbs_up = IntField()
     nb_thumbs_down = IntField()
     nb_views = IntField()
+    nb_summarized_chars = IntField()
 
 
 class Source(Document):
@@ -45,6 +46,7 @@ class Article(Document):
     ratings = ListField(ReferenceField(Rating))
     keywords = ListField(StringField())
     sentiment = FloatField()
+    nb_original_chars = IntField()
 
     def __str__(self):
         return "{0}:{1}".format(self.title, self.url)
