@@ -1,5 +1,6 @@
 from ByteSizeNews.models import *
 from ByteSizeNews.SummarizeService import *
+from ByteSizeNews.SentimentAnalysisService import *
 from datetime import datetime, timedelta
 from mongoengine.queryset.visitor import Q
 import logging
@@ -35,7 +36,7 @@ def get_article_by_id(article_id):
     """
     Return article object
     Summarize here first
-    :param article_id: 
+    :param article_id:
     :return: 
     """
     try:
@@ -43,6 +44,7 @@ def get_article_by_id(article_id):
 
         if not article.is_summarized:
             sum_article = update_summarized_article(article)
+            sum_article = update_sentiment_article(sum_article)
             if sum_article is not None:
                 article = sum_article
                 log.info(("Article:{0} summarized").format(article))
@@ -97,6 +99,10 @@ def get_articles_from_category(category="general",
         if len(article_list):
             return_json_list = [article.as_small_json() for article in article_list]
             return json.dumps(return_json_list)
+
+
+def update_sentiment_article(article):
+    return get_sentiment(article)
 
 
 def update_summarized_article(article, nb_sentances=7):
@@ -212,8 +218,8 @@ def addRating(isUp, article_id, nbSentences):
 def needs_to_be_resummarized(article):
     """
     Checks ratings/views to see if there needs to be resummarize
-    :param article: 
-    :return: 
+    :param article:
+    :return:
     """
 
     # get latest rating
