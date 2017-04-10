@@ -51,6 +51,11 @@ def get_article_by_id(article_id):
 
         elif needs_to_be_resummarized(article):
             sum_article = update_summarized_article(article, len(article.summary_sentences)+1)
+            if sum_article is not None:
+                article = sum_article
+                log.info(("Article:{0} re-summarized").format(article))
+            else:
+                log.info(("Article:{0}: failed to be re-summarized").format(article))
 
         # Increment views in latest rating object
         article.ratings[-1].nb_views += 1
