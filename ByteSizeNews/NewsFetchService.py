@@ -10,14 +10,14 @@ import logging
 log = logging.getLogger(__name__)
 
 
-DEBUG = True
 article_api_request_format = "https://newsapi.org/v1/articles?source={0}&sortBy={1}&apiKey={2}"
 source_api_request_format = "https://newsapi.org/v1/sources?language={0}&category={1}&country={2}"
 all_source_api_request = "https://newsapi.org/v1/sources"
 # Order to go through for sorts as available
 available_sorts = ["latest", "popular", "top"]
 
-
+CURRENT_SOURCE_BLACKLIST_BY_SOURCE_ID = ['associated-press', 'breitbart-news', 'reddit-r-all',
+                                         'hacker-news', 'business-insider-uk']
 
 def fetch_and_save_latest_news():
     """
@@ -27,6 +27,9 @@ def fetch_and_save_latest_news():
     all_sources = Source.objects.all()
 
     for source in all_sources:
+        # ignore all articles from blacklisted sources
+        if source.source_id in CURRENT_SOURCE_BLACKLIST_BY_SOURCE_ID:
+            continue
         fetch_latest_news_by_source(source)
 
 

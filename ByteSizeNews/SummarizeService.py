@@ -1,6 +1,7 @@
 # Load url from database
 
 from django.conf import settings
+from ByteSizeNews.models import Rating
 import requests
 
 apirequestheader = "http://api.smmry.com/&SM_API_KEY="+settings.SMMRY_KEY+"&SM_KEYWORD_COUNT=5&SM_WITH_BREAK"
@@ -23,6 +24,11 @@ def summarize(article, numberOfSentances=7):
         article.summary_sentences = summarizedContent
         article.keywords = keywordArray
         article.is_summarized = True
+
+        # Create new rating object and set to 0/0/0 and save
+        rating = Rating(nb_sentences=numberOfSentances, nb_thumbs_down=0, nb_thumbs_up=0, nb_views=0)
+        rating.save()
+        article.ratings.append(rating)
         article.save()
         return article
     except:
