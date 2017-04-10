@@ -218,7 +218,14 @@ def needs_to_be_resummarized(article):
 
     # get latest rating
     rating = article.ratings[-1]
-    if rating.nb_thumbs_down/rating.nb_thumbs_up > 3.0:
+
+    rating_thumbs_up = rating.nb_thumbs_up
+
+    if rating.nb_thumbs_up == 0 and rating.nb_thumbs_down>0:
+        rating_thumbs_up = 1
+
+
+    if rating.nb_thumbs_down/rating_thumbs_up > 3.0:
         return True
     else:
         return False
