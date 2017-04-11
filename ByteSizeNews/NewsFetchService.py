@@ -4,7 +4,9 @@ import pytz
 import dateutil.parser
 from datetime import datetime
 import requests
+import urllib.parse
 import logging
+
 
 
 log = logging.getLogger('django')
@@ -13,6 +15,7 @@ log = logging.getLogger('django')
 article_api_request_format = "https://newsapi.org/v1/articles?source={0}&sortBy={1}&apiKey={2}"
 source_api_request_format = "https://newsapi.org/v1/sources?language={0}&category={1}&country={2}"
 entity_extraction_format = "https://api.dandelion.eu/datatxt/nex/v1/?url={0}&include=types%2Ccategories&token={1}"
+classify_api_format = "https://api.uclassify.com/v1/uclassify/topics/Classify?readkey={0}&text={1}"
 all_source_api_request = "https://newsapi.org/v1/sources"
 # Order to go through for sorts as available
 available_sorts = ["latest", "popular", "top"]
@@ -66,12 +69,30 @@ def fetch_latest_news_by_source(source):
             jsonEntityRepsonse = entityResponse.json()
             originalCharCount = 0
             if 'text' in jsonEntityRepsonse:
-                originalCharCount = len(jsonEntityRepsonse['text'])
+                unsummarized_text = jsonEntityRepsonse['text']
+                originalCharCount = len(unsummarized_text)
+
+                # get category
+                try:
+                    urlencodedText = urllib.parse.quote_plus(unsummarized_text)
+                    classifyResponse = requests.get(classify_api_format.format(settings.UCLASSIFY_KEY, urlencodedText))
+                    jsonClassifyResponse = classifyResponse.json()
+                    max_key_val = 0
+                    category = "General"
+                    for key in jsonClassifyResponse:
+                        if jsonClassifyResponse[key] > max_key_val:
+                            max_key_val = jsonClassifyResponse[key]
+                            category = key
+
+                except:
+                    category = "General"
+
+
 
 
             save_article_unsummarized(title=article['title'], author=article['author'], url=article['url'], source=source,
                                       description=article['description'], url_to_image=article['urlToImage'],
-                                      published_at=publishedDate, nb_original_chars=originalCharCount)
+                                      published_at=publishedDate, nb_original_chars=originalCharCount, category =category)
             # #Ony save once per call
             # if DEBUG:
             #     log.info(article)

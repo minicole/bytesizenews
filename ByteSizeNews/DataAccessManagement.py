@@ -19,9 +19,14 @@ def get_articles():
 
 
 def get_all_categories():
-    return Source.objects.distinct(field='category')
+    categorieslist = Article.objects.distinct(field='category')
+
+    #Only general available
+    if(categorieslist<2):
+        categorieslist = Source.objects.distinct(field='category')
     # return ["business", "entertainment", "gaming", "general",
     #         "music", "politics", "science-and-nature", "sport", "technology"]
+        return json.dumps({'categories': categorieslist})
 
 
 def get_all_languages():
@@ -110,7 +115,7 @@ def update_summarized_article(article, nb_sentances=7):
     return summarize(article, nb_sentances)
 
 
-def save_article_unsummarized(title, author, url, source, description, url_to_image, published_at, nb_original_chars):
+def save_article_unsummarized(title, author, url, source, description, url_to_image, published_at, nb_original_chars, category):
     """
     Checks if an article already exists from NewsApi, if not saves in DB
     :param title:
@@ -129,7 +134,8 @@ def save_article_unsummarized(title, author, url, source, description, url_to_im
 
     if article is None:
         article = Article(title=title, author=author, url=url, source=source, description=description,
-                          url_to_image=url_to_image, published_at=published_at, nb_original_chars=nb_original_chars)
+                          url_to_image=url_to_image, published_at=published_at,
+                          nb_original_chars=nb_original_chars, category=category)
 
         try:
             article.save()
