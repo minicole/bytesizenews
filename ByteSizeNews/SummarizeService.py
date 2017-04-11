@@ -20,6 +20,10 @@ def summarize(article, numberOfSentances):
     errorResponse = jsonresponse['sm_api_limitation']
     summarizedContent = jsonresponse['sm_api_content'].split("[BREAK]")
 
+    # Remove last blank in the split
+    if summarizedContent[-1] == "":
+        summarizedContent = summarizedContent[:-1]
+
     # Check the error response here
     try:
         article.summary_sentences = summarizedContent
