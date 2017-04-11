@@ -48,6 +48,9 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
                 console.log(response);
                 var articleParsed = response.data;
 
+                if (articleParsed.summary_sentences[articleParsed.summary_sentences.length - 1] === "") {
+                    articleParsed.summary_sentences.pop();
+                }
                 if (articleParsed.ratings.length > 0) {
                     articleParsed.rated = articleParsed.ratings.find(function (currentValue) {
                         return currentValue.nb_sentences = articleParsed.summary_sentences.length;
@@ -59,9 +62,6 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
                     };
                 }
 
-                if (articleParsed.summary_sentences[articleParsed.summary_sentences.length - 1] === "") {
-                    articleParsed.summary_sentences.pop();
-                }
 
                 $scope.slider.value = Math.floor(articleParsed.sentiment * 100);
 
