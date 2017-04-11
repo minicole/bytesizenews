@@ -68,7 +68,19 @@ def get_article_by_id(article_id):
         article.ratings[-1].nb_views += 1
         article.save(cascade=True)
         article.ratings[-1].save()
-        return article.to_json()
+        return_json = {}
+        # Find 4 similar articles recently published
+        similar_articles_list = similar_articles(article)
+        if len(similar_articles_list):
+            return_similar_json_list = [s_article.as_small_json() for s_article in similar_articles_list]
+            # log.info(return_json_list)
+            similarjson = json.dumps(return_similar_json_list)
+
+            return_json = json.loads(article.to_json())
+
+            return_json['similar_articles'] = similarjson
+
+        return json.dumps(return_json)
 
     except Article.DoesNotExist:
         return json.dumps("{'status':'Does not exist Error'}")
@@ -133,7 +145,8 @@ def update_summarized_article(article, nb_sentances=7):
     return summarize(article, nb_sentances)
 
 
-def save_article_unsummarized(title, author, url, source, description, url_to_image, published_at, nb_original_chars, category):
+def save_article_unsummarized(title, author, url, source, description, url_to_image,
+                              published_at, nb_original_chars, category):
     """
     Checks if an article already exists from NewsApi, if not saves in DB
     :param title:
@@ -262,3 +275,34 @@ def needs_to_be_resummarized(article):
         return True
     else:
         return False
+
+
+def similar_articles(article):
+    keyWordList = article.keywords
+    keyWordSet = set(keyWordList)
+    candidateList = Article.objects.filter(keywords__in=keyWordList)
+
+    # Assign score by article in terms of number of keywords that intersect
+    similarityScoreTupleList = []
+
+    for candidate in candidateList:
+        intersectSet = keyWordSet.intersection(candidateList.keywords)
+        similarityScoreTupleList.append((candidate, len(intersectSet)))
+
+    # Sort based on score
+    similarityScoreTupleList.sort(key=lambda x: x[1], reverse=True)
+
+    returnList = []
+    similar_list_max = 4
+    for articleTuple in similarityScoreTupleList:
+        if articleTuple[0] == article:
+            continue
+        returnList.append(articleTuple[0])
+
+        if len(returnList) == similar_list_max:
+            break
+
+    return returnList
+
+
+
