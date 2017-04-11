@@ -48,7 +48,8 @@ def get_article_by_id(article_id):
 
         if not article.is_summarized:
             sum_article = update_summarized_article(article)
-            sum_article = update_sentiment_article(sum_article)
+            if sum_article is not None:
+                sum_article = update_sentiment_article(sum_article)
             if sum_article is not None:
                 article = sum_article
                 log.info(("Article:{0} summarized").format(article))
@@ -103,7 +104,7 @@ def get_articles_from_category(category="General",
 
         # Some exceptions for categories
 
-        if category == "General":
+        if category.lower() == "General".lower():
             categories = ["General", "general", "Recreation"]
         elif category == "All":
             jsonCat = json.loads(get_all_categories())

@@ -175,7 +175,7 @@ def lateral_entity_extraction(url):
     originalCharCount = 0
     unsummarized_text = ""
     if 'body' in jsonEntityRepsonse:
-        unsummarized_text = jsonEntityRepsonse['body'].encode('ascii', 'ignore')
+        unsummarized_text = jsonEntityRepsonse['body'].encode('ascii', 'ignore').decode('ascii')
         originalCharCount = len(unsummarized_text)
         log.info("Lateral API used to extract entity")
     else:
