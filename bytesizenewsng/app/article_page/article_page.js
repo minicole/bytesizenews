@@ -11,6 +11,8 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
 
     .controller('article_pageCtrl', ['$route', '$http', '$scope', 'ngProgressFactory', function ($route, $http, $scope, ngProgressFactory) {
         $scope.progressbar = ngProgressFactory.createInstance();
+        $scope.progressbar.setHeight("5px");
+        $scope.progressbar.setColor("#f04641");
         $scope.progressbar.start();
         $scope.data_loaded = false;
         $scope.slider = {

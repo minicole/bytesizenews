@@ -48,6 +48,10 @@
     padding-top: 25px;
 }
 
+.navbar {
+    z-index: 999;
+}
+
 .navbar-fixed-top {
     background: #333;
     overflow : hidden;
