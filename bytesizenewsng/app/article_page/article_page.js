@@ -10,6 +10,16 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
     }])
 
     .controller('article_pageCtrl', ['$route', '$http', '$scope', 'ngProgressFactory', function ($route, $http, $scope, ngProgressFactory) {
+
+        var randomColor = function() {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++ ) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        };
+
         $scope.progressbar = ngProgressFactory.createInstance();
         $scope.progressbar.setHeight("5px");
         $scope.progressbar.setColor("#f04641");
@@ -70,6 +80,23 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
                     articleParsed.compression = "unknown";
                 }
 
+                var articles = [];
+                if (typeof articleParsed.similarArticles === "object") {
+                    for (var i = articleParsed.similarArticles.length - 1; i >= 0; i--) {
+                        var article = articleParsed.similarArticles[i];
+                        if (article.url_to_image) {
+                            article.background = "background-image: url(" + article.url_to_image + ")";
+                        } else {
+                            article.background = "background-color: " + randomColor();
+                        }
+                        var d = new Date(article.published_at);
+                        article.hours = Math.floor((Date.now() - d.getTime()) / 1000 / 60 / 60);
+                        if (article.description === undefined || article.description === "") {
+                            article.description = "no description";
+                        }
+                        articles.push(article);
+                    }
+                }
 
                 $scope.slider.value = Math.floor(articleParsed.sentiment * 100);
 
