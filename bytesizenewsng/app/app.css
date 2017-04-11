@@ -50,7 +50,7 @@
 
 .navbar-fixed-top {
     background: #333;
-    overflow = hidden;
+    overflow : hidden;
 }
 
 .navbar a {
@@ -60,15 +60,16 @@
     padding: 14px 16px;
     text-decoration: none;
     font-size: 17px;
+    color: white;
 }
 
 .navbar a:hover {
-    background-color: #ddd;
+    background-color: lightgray;
     color: black;
 }
 
 .navbar li.active{
-    background-color: #4CAF50;
+    background-color: gray;
     color: white;
 }
 
@@ -86,9 +87,20 @@
 }
 
 .logo {
-    max-width: 50%;
+    //max-width: 50%;
 }
 
 .icon-bar {
     background: red;
+}
+
+.title {
+    font-family: Consolas;
+    font-size: 50px;
+    font-weight: 700;
+}
+
+.slogan {
+    font-family: Roboto;
+    font-size: 32px;
 }
