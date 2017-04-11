@@ -155,13 +155,14 @@ def dandelion_entity_extraction(dKey, url):
     entityResponse = requests.get(entityRequest)
 
     jsonEntityRepsonse = entityResponse.json()
-    log.info(jsonEntityRepsonse)
     originalCharCount = 0
     unsummarized_text = ""
     if 'text' in jsonEntityRepsonse:
         unsummarized_text = jsonEntityRepsonse['text'].encode('ascii', 'ignore')
         originalCharCount = len(unsummarized_text)
-
+        log.info("Dandelion API used to extract entity")
+    else:
+        log.info("Dandelion API failed to extract entity")
     return {'nb_original_chars': originalCharCount,
             'unsummarized_text': unsummarized_text}
 
@@ -171,12 +172,14 @@ def lateral_entity_extraction(url):
     entityResponse = requests.get(entityRequest, headers=lateral_headers)
 
     jsonEntityRepsonse = entityResponse.json()
-    log.info(entityResponse.text.encode('ascii', 'ignore'))
     originalCharCount = 0
     unsummarized_text = ""
     if 'body' in jsonEntityRepsonse:
         unsummarized_text = jsonEntityRepsonse['body'].encode('ascii', 'ignore')
         originalCharCount = len(unsummarized_text)
+        log.info("Lateral API used to extract entity")
+    else:
+        log.info("Lateral API failed to extract entity")
 
     return {'nb_original_chars': originalCharCount,
             'unsummarized_text': unsummarized_text}
