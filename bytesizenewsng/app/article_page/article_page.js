@@ -65,8 +65,8 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
 
                 $scope.slider.value = Math.floor(articleParsed.sentiment * 100);
 
-                var date = Date(articleParsed.published_at);
-                articleParsed.date = date.substring(0, date.lastIndexOf(":") + 3);
+                var date = new Date(articleParsed.published_at.$date);
+                articleParsed.date = date.toDateString() + " - " + date.toLocaleTimeString();
                 $scope.progressbar.complete();
                 $scope.data_loaded = true;
                 $scope.article = articleParsed;
