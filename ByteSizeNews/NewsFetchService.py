@@ -21,7 +21,10 @@ all_source_api_request = "https://newsapi.org/v1/sources?language=en"
 available_sorts = ["latest", "popular", "top"]
 
 CURRENT_SOURCE_BLACKLIST_BY_SOURCE_ID = ['associated-press', 'breitbart-news', 'reddit-r-all',
-                                         'hacker-news', 'business-insider-uk']
+                                         'hacker-news', 'business-insider-uk', 'buzzfeed',
+                                         'espn-cric-info', 'football-italia', 'mtv-news-uk', 'four-four-two',
+                                         'mashable', 'metro', 'mirror', 'the-lad-bible', 'the-sport-bible',
+                                         'the-times-of-india']
 
 def fetch_and_save_latest_news():
     """
