@@ -6,7 +6,7 @@ from mongoengine.queryset.visitor import Q
 import logging
 import json
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('django')
 
 TIME_THRESHOLD_CONSTANT_DAYS = 0
 TIME_THRESHOLD_CONSTANT_HOURS = 5
