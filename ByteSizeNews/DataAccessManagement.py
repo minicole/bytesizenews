@@ -195,7 +195,8 @@ def addRating(isUp, article_id, nbSentences):
                 rating.nb_thumbs_down += 1
                 log.info("Number of thumbs down incremented for article " + article_id + " for " + nbSentences)
 
-            rating.save()
+            rating.save(cascade=True)
+            # article.save()
         else:
             # Must have been summarized without a rating object
             if isUp:
