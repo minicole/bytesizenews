@@ -183,7 +183,7 @@ def addRating(isUp, article_id, nbSentences):
         rating = None
 
         for ratingCandidate in article.ratings:
-            if rating.nb_sentences == nbSentences:
+            if ratingCandidate.nb_sentences == nbSentences:
                 rating = ratingCandidate
                 break
 

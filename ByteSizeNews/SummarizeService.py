@@ -4,12 +4,13 @@ from django.conf import settings
 from ByteSizeNews.models import Rating
 import requests
 
-apirequestheader = "http://api.smmry.com/&SM_API_KEY="+settings.SMMRY_KEY+"&SM_KEYWORD_COUNT=5&SM_WITH_BREAK"
+apirequestheader = "http://api.smmry.com/&SM_API_KEY={0}&SM_KEYWORD_COUNT=5&SM_WITH_BREAK&SM_QUOTE_AVOID"\
+    .format(settings.SMMRY_KEY)
 
 
 def summarize(article, numberOfSentances):
     # Build API request
-    apirequest = apirequestheader+"&SM_LENGTH="+str(numberOfSentances)+"&SM_URL="+article.url
+    apirequest = "{0}&SM_LENGTH={1}&SM_URL={2}".format(apirequestheader, str(numberOfSentances), article.url)
     r = requests.get(apirequest)
     jsonresponse = r.json()
 
@@ -18,6 +19,10 @@ def summarize(article, numberOfSentances):
     charCount = jsonresponse['sm_api_character_count']
     errorResponse = jsonresponse['sm_api_limitation']
     summarizedContent = jsonresponse['sm_api_content'].split("[BREAK]")
+
+    # Remove last blank in the split
+    if summarizedContent[-1] == "":
+        summarizedContent = summarizedContent[:-1]
 
     # Check the error response here
     try:
