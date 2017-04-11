@@ -60,30 +60,34 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
                 console.log(response);
                 var articleParsed = response.data;
 
-                if (articleParsed.summary_sentences[articleParsed.summary_sentences.length - 1] === "") {
-                    articleParsed.summary_sentences.pop();
-                }
-                if (articleParsed.ratings.length > 0) {
-                    articleParsed.rated = articleParsed.ratings.find(function (currentValue) {
-                        return currentValue.nb_sentences = articleParsed.summary_sentences.length;
-                    });
-                    if (articleParsed.nb_original_chars && articleParsed.rated.nb_summarized_chars) {
-                        articleParsed.compression = 100 - Math.floor(articleParsed.rated.nb_summarized_chars / articleParsed.nb_original_chars * 100) + "%";
+                if (articleParsed.summary_sentences === undefined) {
+                    articleParsed.summary_sentences = articleParsed.description;
+                } else {
+                    if (articleParsed.summary_sentences[articleParsed.summary_sentences.length - 1] === "") {
+                        articleParsed.summary_sentences.pop();
+                    }
+                    if (articleParsed.ratings.length > 0) {
+                        articleParsed.rated = articleParsed.ratings.find(function (currentValue) {
+                            return currentValue.nb_sentences = articleParsed.summary_sentences.length;
+                        });
+                        if (articleParsed.nb_original_chars && articleParsed.rated.nb_summarized_chars) {
+                            articleParsed.compression = 100 - Math.floor(articleParsed.rated.nb_summarized_chars / articleParsed.nb_original_chars * 100) + "%";
+                        } else {
+                            articleParsed.compression = "unknown";
+                        }
                     } else {
+                        articleParsed.rated = {
+                            nb_thumbs_up: 0,
+                            nb_thumbs_down: 0
+                        };
                         articleParsed.compression = "unknown";
                     }
-                } else {
-                    articleParsed.rated = {
-                        nb_thumbs_up: 0,
-                        nb_thumbs_down: 0
-                    };
-                    articleParsed.compression = "unknown";
                 }
 
                 var articles = [];
-                if (typeof articleParsed.similarArticles === "object") {
-                    for (var i = articleParsed.similarArticles.length - 1; i >= 0; i--) {
-                        var article = articleParsed.similarArticles[i];
+                if (typeof articleParsed.similar_articles === "object") {
+                    for (var i = articleParsed.similar_articles.length - 1; i >= 0; i--) {
+                        var article = articleParsed.similar_articles[i];
                         if (article.url_to_image) {
                             article.background = "background-image: url(" + article.url_to_image + ")";
                         } else {
