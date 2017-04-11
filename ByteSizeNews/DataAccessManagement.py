@@ -110,7 +110,7 @@ def get_articles_from_category(category="General",
 
         duplicate_article_list = []
         for cat in categories:
-            duplicate_article_list.append(article_list.filter(Q(category=cat)))
+            duplicate_article_list += (article_list.filter(Q(category=cat)))
 
         setArticles = set(duplicate_article_list)
         article_list = list(setArticles)
