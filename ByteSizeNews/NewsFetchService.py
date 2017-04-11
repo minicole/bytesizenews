@@ -7,7 +7,7 @@ import requests
 import logging
 
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('django')
 
 
 article_api_request_format = "https://newsapi.org/v1/articles?source={0}&sortBy={1}&apiKey={2}"
