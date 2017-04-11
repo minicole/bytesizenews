@@ -61,7 +61,8 @@ def get_article_by_id(article_id):
 
         # Increment views in latest rating object
         article.ratings[-1].nb_views += 1
-        article.save()
+        article.save(cascade=True)
+        article.ratings[-1].save()
         return article.to_json()
 
     except Article.DoesNotExist:
@@ -84,7 +85,7 @@ def get_articles_from_category(category="general",
     :return: list of all articles to json
     """
 
-    time_threshold = datetime.now() - time_delta_ago
+    time_threshold = datetime.utcnow() - time_delta_ago
 
     # Get all sources with that category, language and country
     source_list = Source.objects.filter(Q(description__contains=category) | Q(category=category))
@@ -180,6 +181,7 @@ def addRating(isUp, ratingID, nbSentences):
     """
     try:
         rating = Rating.objects.get(id=ratingID)
+        log.info("Found rating: {0}".format(ratingID))
         # article = Article.objects.get(id=article_id)
         # rating = None
         #

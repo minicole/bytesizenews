@@ -35,7 +35,7 @@ def summarize(article, numberOfSentances):
                         nb_summarized_chars=charCount)
         rating.save()
         article.ratings.append(rating)
-        article.save()
+        article.save(cascade=True)
         return article
     except:
         return None
