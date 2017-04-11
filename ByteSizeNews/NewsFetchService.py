@@ -68,6 +68,10 @@ def fetch_latest_news_by_source(source):
         articles = jsonresponse['articles']# gives array of latest articles
 
         for article in articles:
+
+            if article_already_in_db(article['url']):
+                continue
+
             try:
                 publishedDate = dateutil.parser.parse(article['publishedAt'])
             except:
@@ -184,3 +188,12 @@ def fetch_save_and_update_sources():
                         source['country'], source['sortBysAvailable'], logo_url_list)
 
 
+def article_already_in_db(url):
+    try:
+        article = Article.objects.get(url=url)
+        if article is not None:
+            return True
+        else:
+            return False
+    except Article.DoesNotExist:
+        return False
