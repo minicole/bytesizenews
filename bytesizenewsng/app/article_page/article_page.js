@@ -55,11 +55,17 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
                     articleParsed.rated = articleParsed.ratings.find(function (currentValue) {
                         return currentValue.nb_sentences = articleParsed.summary_sentences.length;
                     });
+                    if (articleParsed.nb_original_chars && articleParsed.rated.nb_summarized_chars) {
+                        articleParsed.compression = Math.floor(articleParsed.rated.nb_summarized_chars / articleParsed.nb_original_chars * 100) + "%";
+                    } else {
+                        articleParsed.compression = "unknown";
+                    }
                 } else {
                     articleParsed.rated = {
                         nb_thumbs_up: 0,
                         nb_thumbs_down: 0
                     };
+                    articleParsed.compression = "unknown";
                 }
 
 

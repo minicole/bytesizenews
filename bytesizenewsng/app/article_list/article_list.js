@@ -42,6 +42,9 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
                     }
                     var d = new Date(article.published_at);
                     article.hours = Math.floor((Date.now() - d.getTime()) / 1000 / 60 / 60);
+                    if (article.description === undefined || article.description === "") {
+                        article.description = "no description";
+                    }
                     articles.push(article);
                 }
                 $scope.progressbar.complete();
