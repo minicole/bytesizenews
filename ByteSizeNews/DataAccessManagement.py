@@ -15,7 +15,7 @@ DEFAULT_LANGUAGES_LIST = ["en"]
 
 
 def get_articles():
-    return get_articles_from_category()
+    return get_articles_from_category("All")
 
 
 def get_all_categories():
@@ -105,6 +105,8 @@ def get_articles_from_category(category="General",
 
         if category == "General":
             categories = ["General", "general", "Recreation"]
+        elif category == "All":
+            categories = get_all_categories()['categories']
         else:
             categories = [category]
 
