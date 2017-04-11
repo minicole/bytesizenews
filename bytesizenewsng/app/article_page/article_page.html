@@ -43,7 +43,7 @@
     <div class="row">
         <div class="col-md-3 article-background-square" ng-repeat="article in article.similarArticles" style="{{ article.background }}" ng-click="goToArticle(article.id)">
             <h2 class="see-over-image" tooltips tooltip-template="{{ article.description }}" tooltip-side="down">{{ article.title }}</h2>
-            <h5 class="see-over-image">{{ article.author }}</h5>
+            <h5 class="see-over-image author">{{ article.author }}</h5>
             <h4 class="see-over-image">{{ article.source.source_name }}</h4>
             <h5 class="see-over-image bottom-right">{{ article.hours }}</h5>
         </div>
