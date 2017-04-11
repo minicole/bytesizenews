@@ -75,6 +75,7 @@ def fetch_latest_news_by_source(source):
             jsonEntityRepsonse = entityResponse.json()
             log.info(jsonEntityRepsonse)
             originalCharCount = 0
+            category = "General"
             if 'text' in jsonEntityRepsonse:
                 unsummarized_text = jsonEntityRepsonse['text']
                 originalCharCount = len(unsummarized_text)
@@ -95,7 +96,7 @@ def fetch_latest_news_by_source(source):
                             category = key
 
                 except:
-                    category = "General"
+                    log.info("Error extracting entity or category")
 
             save_article_unsummarized(title=article['title'], author=article['author'], url=article['url'], source=source,
                                       description=article['description'], url_to_image=article['urlToImage'],
