@@ -33,7 +33,7 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
                 console.log(response);
                 var articlesParsed = response.data;
                 var articles = [];
-                for (var i = 0; i < articlesParsed.length; i++) {
+                for (var i = articlesParsed.length - 1; i >= 0; i--) {
                     var article = articlesParsed[i];
                     if (article.url_to_image) {
                         article.background = "background-image: url(" + article.url_to_image + ")";
