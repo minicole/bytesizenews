@@ -22,11 +22,11 @@ def get_all_categories():
     categorieslist = Article.objects.distinct(field='category')
 
     #Only general available
-    if(categorieslist<2):
+    if len(categorieslist) < 2:
         categorieslist = Source.objects.distinct(field='category')
     # return ["business", "entertainment", "gaming", "general",
     #         "music", "politics", "science-and-nature", "sport", "technology"]
-        return json.dumps({'categories': categorieslist})
+    return json.dumps({'categories': categorieslist})
 
 def get_all_languages():
     return Source.objects.distinct(field='language')
@@ -106,7 +106,8 @@ def get_articles_from_category(category="General",
         if category == "General":
             categories = ["General", "general", "Recreation"]
         elif category == "All":
-            categories = get_all_categories()['categories']
+            jsonCat = json.loads(get_all_categories())
+            categories = jsonCat['categories']
         else:
             categories = [category]
 
