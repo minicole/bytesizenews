@@ -29,8 +29,9 @@ SECRET_KEY = keys['<<DjangoSecretKey>>']
 SMMRY_KEY = keys['<<SMMRYKey>>']
 NEWS_KEY = keys['<<NewsAPIKey>>']
 MCS_TEXT_KEY = keys['<<MCStextKey>>']
-DANDELION_KEY = keys['<<DandelionAPIKey>>']
-UCLASSIFY_KEY = keys ['<<uClassifyKey>>']
+DANDELION_KEY = [keys['<<DandelionAPIKey>>'], keys['<<DandelionAPIKey2>>']]
+LATERAL_KEY = keys['<<LateralAPIKey>>']
+UCLASSIFY_KEY = [keys['<<uClassifyKey>>'], keys['<<uClassifyKey2>>']]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

@@ -15,6 +15,8 @@ log = logging.getLogger('django')
 article_api_request_format = "https://newsapi.org/v1/articles?source={0}&sortBy={1}&apiKey={2}"
 source_api_request_format = "https://newsapi.org/v1/sources?language={0}&category={1}&country={2}"
 entity_extraction_format = "https://api.dandelion.eu/datatxt/nex/v1/?url={0}&include=types%2Ccategories&token={1}"
+lateral_entity_extraction_format = "https://document-parser-api.lateral.io/?url={0}"
+lateral_headers = {'content-type': 'application/json', 'subscription-key': settings.LATERAL_KEY}
 classify_api_format = "https://api.uclassify.com/v1/uclassify/topics/Classify?readkey={0}&text={1}"
 all_source_api_request = "https://newsapi.org/v1/sources?language=en"
 # Order to go through for sorts as available
@@ -25,6 +27,8 @@ CURRENT_SOURCE_BLACKLIST_BY_SOURCE_ID = ['associated-press', 'breitbart-news', '
                                          'espn-cric-info', 'football-italia', 'mtv-news-uk', 'four-four-two',
                                          'mashable', 'metro', 'mirror', 'the-lad-bible', 'the-sport-bible',
                                          'the-times-of-india']
+
+CHAR_COUNT_THRESHOLD = 400
 
 def fetch_and_save_latest_news():
     """
@@ -54,6 +58,9 @@ def fetch_latest_news_by_source(source):
             sortBy = available_sort
             break
 
+    category = "General"  # default category
+    originalCharCount = 0 # Default char count
+
     apirequest = article_api_request_format.format(source.source_id, sortBy, settings.NEWS_KEY)
     r = requests.get(apirequest)
     jsonresponse = r.json()
@@ -67,44 +74,98 @@ def fetch_latest_news_by_source(source):
                 # Put current
                 publishedDate = datetime.now(pytz.utc)
 
-            #Call the Dandelion API to get entity text for original char count + category via uclassify
-            entityRequest = entity_extraction_format.format(article['url'], settings.DANDELION_KEY)
-            log.info(entityRequest)
-            entityResponse = requests.get(entityRequest)
+            # Call the Dandelion API one after each other if one fails, call other to get entity text for original char count
+            #
+            # If both fail call the lateral one
 
-            jsonEntityRepsonse = entityResponse.json()
-            log.info(jsonEntityRepsonse)
-            originalCharCount = 0
-            category = "General"
-            if 'text' in jsonEntityRepsonse:
-                unsummarized_text = jsonEntityRepsonse['text']
-                originalCharCount = len(unsummarized_text)
+            # Pass one
+            entityExtraction = dandelion_entity_extraction(settings.DANDELION_KEY[0], article['url'])
 
-                # get category
-                try:
-                    urlencodedText = urllib.parse.quote_plus(unsummarized_text)
-                    classifyRequest = classify_api_format.format(settings.UCLASSIFY_KEY, urlencodedText)
-                    log.info(classifyRequest)
-                    classifyResponse = requests.get(classifyRequest)
-                    jsonClassifyResponse = classifyResponse.json()
-                    log.info(jsonClassifyResponse)
+            originalCharCount = entityExtraction['nb_original_chars']
+
+            # Pass 2
+            if originalCharCount == 0:
+                entityExtraction = dandelion_entity_extraction(settings.DANDELION_KEY[1], article['url'])
+
+                originalCharCount = entityExtraction['nb_original_chars']
+
+            # Pass 3
+            if originalCharCount == 0:
+                entityExtraction = lateral_entity_extraction(article['url'])
+                originalCharCount = entityExtraction['nb_original_chars']
+
+            # Only save articles with more than threshold
+            if originalCharCount < CHAR_COUNT_THRESHOLD:
+                continue
+
+            # get category
+            try:
+                urlencodedText = urllib.parse.quote_plus(entityExtraction['unsummarized_text'])
+
+                # Two passes on classification
+                classifyRequest = classify_api_format.format(settings.UCLASSIFY_KEY[0], urlencodedText)
+                classifyResponse = requests.get(classifyRequest)
+                jsonClassifyResponse = classifyResponse.json()
+                log.info(jsonClassifyResponse)
+
+                # Pass 2:
+                if 'statusCode' in jsonClassifyResponse:
+                    if jsonClassifyResponse['statusCode'] == 400:
+                        classifyRequest = classify_api_format.format(settings.UCLASSIFY_KEY[1], urlencodedText)
+                        classifyResponse = requests.get(classifyRequest)
+                        jsonClassifyResponse = classifyResponse.json()
+                        log.info(jsonClassifyResponse)
+
+                # if fail,
+                if 'statusCode' in jsonClassifyResponse:
+                    if jsonClassifyResponse['statusCode'] == 400:
+                        log.info("Failed to classify")
+                else:
+                    # Can finally categorize
                     max_key_val = 0
-                    category = "General"
+
                     for key in jsonClassifyResponse:
                         if jsonClassifyResponse[key] > max_key_val:
                             max_key_val = jsonClassifyResponse[key]
                             category = key
 
-                except:
-                    log.info("Error extracting entity or category")
+            except:
+                log.info("Error extracting entity or category")
 
-            save_article_unsummarized(title=article['title'], author=article['author'], url=article['url'], source=source,
-                                      description=article['description'], url_to_image=article['urlToImage'],
-                                      published_at=publishedDate, nb_original_chars=originalCharCount, category=category)
-            # #Ony save once per call
-            # if DEBUG:
-            #     log.info(article)
-            #     break
+            save_article_unsummarized(title=article['title'], author=article['author'], url=article['url'],
+                                      source=source,description=article['description'],
+                                      url_to_image=article['urlToImage'], published_at=publishedDate,
+                                      nb_original_chars=originalCharCount, category=category)
+
+
+def dandelion_entity_extraction(dKey, url):
+    entityRequest = entity_extraction_format.format(url, dKey)
+    entityResponse = requests.get(entityRequest)
+
+    jsonEntityRepsonse = entityResponse.json()
+    log.info(jsonEntityRepsonse)
+    originalCharCount = 0
+    if 'text' in jsonEntityRepsonse:
+        unsummarized_text = jsonEntityRepsonse['text'].encode('ascii', 'ignore')
+        originalCharCount = len(unsummarized_text)
+
+    return {'nb_original_chars': originalCharCount,
+            'unsummarized_text': unsummarized_text}
+
+
+def lateral_entity_extraction(url):
+    entityRequest = lateral_entity_extraction_format.format(url)
+    entityResponse = requests.get(entityRequest, headers=lateral_headers)
+
+    jsonEntityRepsonse = entityResponse.json()
+    log.info(entityResponse.text.encode('ascii', 'ignore'))
+    originalCharCount = 0
+    if 'body' in jsonEntityRepsonse:
+        unsummarized_text = jsonEntityRepsonse['body'].encode('ascii', 'ignore')
+        originalCharCount = len(unsummarized_text)
+
+    return {'nb_original_chars': originalCharCount,
+            'unsummarized_text': unsummarized_text}
 
 
 def fetch_save_and_update_sources():
