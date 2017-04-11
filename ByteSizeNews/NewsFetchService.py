@@ -12,6 +12,7 @@ log = logging.getLogger('django')
 
 article_api_request_format = "https://newsapi.org/v1/articles?source={0}&sortBy={1}&apiKey={2}"
 source_api_request_format = "https://newsapi.org/v1/sources?language={0}&category={1}&country={2}"
+entity_extraction_format = "https://api.dandelion.eu/datatxt/nex/v1/?url={0}&include=types%2Ccategories&token={1}"
 all_source_api_request = "https://newsapi.org/v1/sources"
 # Order to go through for sorts as available
 available_sorts = ["latest", "popular", "top"]
@@ -51,7 +52,7 @@ def fetch_latest_news_by_source(source):
     r = requests.get(apirequest)
     jsonresponse = r.json()
     if jsonresponse['status'] == "ok":
-        articles = jsonresponse['articles'] # gives array of latest articles
+        articles = jsonresponse['articles']# gives array of latest articles
 
         for article in articles:
             try:
@@ -60,9 +61,17 @@ def fetch_latest_news_by_source(source):
                 # Put current
                 publishedDate = datetime.now(pytz.utc)
 
+            #Call the Dandelion API to get entity text for original char count + category via uclassify
+            entityResponse = requests.get(entity_extraction_format.format(article['url'], settings.DANDELION_KEY))
+            jsonEntityRepsonse = entityResponse.json()
+            originalCharCount = 0
+            if 'text' in jsonEntityRepsonse:
+                originalCharCount = len(jsonEntityRepsonse['text'])
+
+
             save_article_unsummarized(title=article['title'], author=article['author'], url=article['url'], source=source,
                                       description=article['description'], url_to_image=article['urlToImage'],
-                                      published_at=publishedDate)
+                                      published_at=publishedDate, nb_original_chars=originalCharCount)
             # #Ony save once per call
             # if DEBUG:
             #     log.info(article)

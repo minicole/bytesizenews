@@ -48,6 +48,7 @@ class Article(Document):
     keywords = ListField(StringField())
     sentiment = FloatField()
     nb_original_chars = IntField()
+    category = StringField()
 
     def __str__(self):
         return "{0}:{1}".format(self.title, self.url)
