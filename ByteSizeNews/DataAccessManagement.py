@@ -28,7 +28,6 @@ def get_all_categories():
     #         "music", "politics", "science-and-nature", "sport", "technology"]
         return json.dumps({'categories': categorieslist})
 
-3
 def get_all_languages():
     return Source.objects.distinct(field='language')
 
@@ -104,7 +103,7 @@ def get_articles_from_category(category="General",
 
         # Some exceptions for categories
 
-        if category=="General":
+        if category == "General":
             categories = ["General", "general", "Recreation"]
         else:
             categories = [category]
@@ -115,9 +114,10 @@ def get_articles_from_category(category="General",
 
         setArticles = set(duplicate_article_list)
         article_list = list(setArticles)
-
+        log.info("Returns:{0} Articles".format(len(article_list)))
         if len(article_list):
             return_json_list = [article.as_small_json() for article in article_list]
+            log.info(return_json_list)
             return json.dumps(return_json_list)
 
 
