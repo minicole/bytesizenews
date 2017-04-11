@@ -4,7 +4,9 @@ import pytz
 import dateutil.parser
 from datetime import datetime
 import requests
+import urllib.parse
 import logging
+
 
 
 log = logging.getLogger('django')
@@ -12,6 +14,8 @@ log = logging.getLogger('django')
 
 article_api_request_format = "https://newsapi.org/v1/articles?source={0}&sortBy={1}&apiKey={2}"
 source_api_request_format = "https://newsapi.org/v1/sources?language={0}&category={1}&country={2}"
+entity_extraction_format = "https://api.dandelion.eu/datatxt/nex/v1/?url={0}&include=types%2Ccategories&token={1}"
+classify_api_format = "https://api.uclassify.com/v1/uclassify/topics/Classify?readkey={0}&text={1}"
 all_source_api_request = "https://newsapi.org/v1/sources"
 # Order to go through for sorts as available
 available_sorts = ["latest", "popular", "top"]
@@ -47,11 +51,10 @@ def fetch_latest_news_by_source(source):
             break
 
     apirequest = article_api_request_format.format(source.source_id, sortBy, settings.NEWS_KEY)
-    log.info(apirequest)
     r = requests.get(apirequest)
     jsonresponse = r.json()
     if jsonresponse['status'] == "ok":
-        articles = jsonresponse['articles'] # gives array of latest articles
+        articles = jsonresponse['articles']# gives array of latest articles
 
         for article in articles:
             try:
@@ -60,9 +63,39 @@ def fetch_latest_news_by_source(source):
                 # Put current
                 publishedDate = datetime.now(pytz.utc)
 
+            #Call the Dandelion API to get entity text for original char count + category via uclassify
+            entityRequest = entity_extraction_format.format(article['url'], settings.DANDELION_KEY)
+            log.info(entityRequest)
+            entityResponse = requests.get(entityRequest)
+
+            jsonEntityRepsonse = entityResponse.json()
+            log.info(jsonEntityRepsonse)
+            originalCharCount = 0
+            if 'text' in jsonEntityRepsonse:
+                unsummarized_text = jsonEntityRepsonse['text']
+                originalCharCount = len(unsummarized_text)
+
+                # get category
+                try:
+                    urlencodedText = urllib.parse.quote_plus(unsummarized_text)
+                    classifyRequest = classify_api_format.format(settings.UCLASSIFY_KEY, urlencodedText)
+                    log.info(classifyRequest)
+                    classifyResponse = requests.get(classifyRequest)
+                    jsonClassifyResponse = classifyResponse.json()
+                    log.info(jsonClassifyResponse)
+                    max_key_val = 0
+                    category = "General"
+                    for key in jsonClassifyResponse:
+                        if jsonClassifyResponse[key] > max_key_val:
+                            max_key_val = jsonClassifyResponse[key]
+                            category = key
+
+                except:
+                    category = "General"
+
             save_article_unsummarized(title=article['title'], author=article['author'], url=article['url'], source=source,
                                       description=article['description'], url_to_image=article['urlToImage'],
-                                      published_at=publishedDate)
+                                      published_at=publishedDate, nb_original_chars=originalCharCount, category=category)
             # #Ony save once per call
             # if DEBUG:
             #     log.info(article)
