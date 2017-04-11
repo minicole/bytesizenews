@@ -49,8 +49,8 @@ def get_article(request, articleID):
 
 
 @csrf_exempt
-def thumbsUp(request, articleID, nbSentences):
-    confirmation = DataAccessManagement.addRating(True, articleID, nbSentences)
+def thumbsUp(request, ratingID, nbSentences):
+    confirmation = DataAccessManagement.addRating(True, ratingID, nbSentences)
 
     resp = HttpResponse(confirmation)
     resp.setdefault("Access-Control-Allow-Origin", "*")
@@ -61,8 +61,8 @@ def thumbsUp(request, articleID, nbSentences):
 
 
 @csrf_exempt
-def thumbsDown(request, articleID, nbSentences):
-    confirmation = DataAccessManagement.addRating(False, articleID, nbSentences)
+def thumbsDown(request, ratingID, nbSentences):
+    confirmation = DataAccessManagement.addRating(False, ratingID, nbSentences)
 
     resp = HttpResponse(confirmation)
     resp.setdefault("Access-Control-Allow-Origin", "*")

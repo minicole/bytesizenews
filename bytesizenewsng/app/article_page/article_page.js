@@ -76,7 +76,7 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
             if (!$scope.rated) {
                 $scope.article.rated.nb_thumbs_up++;
                 $scope.rated = true;
-                url = "http://bytesizenews.net:8080/thumbsup/" + $route.current.params.articleid + "/" + $scope.article.summary_sentences.length + "/";
+                url = "http://bytesizenews.net:8080/thumbsup/" + $scope.article.rated._id.$oid + "/" + $scope.article.summary_sentences.length + "/";
                 $http.get(url, config)
                     .then(function (response) {
                         console.log(response);
@@ -88,7 +88,7 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
             if (!$scope.rated) {
                 $scope.article.rated.nb_thumbs_down++;
                 $scope.rated = true;
-                url = "http://bytesizenews.net:8080/thumbsdown/" + $route.current.params.articleid + "/" + $scope.article.summary_sentences.length + "/";
+                url = "http://bytesizenews.net:8080/thumbsdown/" + $scope.article.rated._id.$oid + "/" + $scope.article.summary_sentences.length + "/";
                 $http.get(url, config)
                     .then(function (response) {
                         console.log(response);
