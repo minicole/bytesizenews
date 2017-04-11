@@ -89,7 +89,7 @@ def get_articles_from_category(category="General",
     :param countries: Array of source countries to filter for
     :return: list of all articles to json
     """
-
+    log.info("Fetching articles for category{0}, from {1} ago".format(category, time_delta_ago))
     time_threshold = datetime.utcnow() - time_delta_ago
 
     # Get all Articles with source in english
