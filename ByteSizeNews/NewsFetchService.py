@@ -51,7 +51,6 @@ def fetch_latest_news_by_source(source):
             break
 
     apirequest = article_api_request_format.format(source.source_id, sortBy, settings.NEWS_KEY)
-    log.info(apirequest)
     r = requests.get(apirequest)
     jsonresponse = r.json()
     if jsonresponse['status'] == "ok":
@@ -65,8 +64,12 @@ def fetch_latest_news_by_source(source):
                 publishedDate = datetime.now(pytz.utc)
 
             #Call the Dandelion API to get entity text for original char count + category via uclassify
-            entityResponse = requests.get(entity_extraction_format.format(article['url'], settings.DANDELION_KEY))
+            entityRequest = entity_extraction_format.format(article['url'], settings.DANDELION_KEY)
+            log.info(entityRequest)
+            entityResponse = requests.get(entityRequest)
+
             jsonEntityRepsonse = entityResponse.json()
+            log.info(jsonEntityRepsonse)
             originalCharCount = 0
             if 'text' in jsonEntityRepsonse:
                 unsummarized_text = jsonEntityRepsonse['text']
@@ -75,8 +78,11 @@ def fetch_latest_news_by_source(source):
                 # get category
                 try:
                     urlencodedText = urllib.parse.quote_plus(unsummarized_text)
-                    classifyResponse = requests.get(classify_api_format.format(settings.UCLASSIFY_KEY, urlencodedText))
+                    classifyRequest = classify_api_format.format(settings.UCLASSIFY_KEY, urlencodedText)
+                    log.info(classifyRequest)
+                    classifyResponse = requests.get(classifyRequest)
                     jsonClassifyResponse = classifyResponse.json()
+                    log.info(jsonClassifyResponse)
                     max_key_val = 0
                     category = "General"
                     for key in jsonClassifyResponse:
@@ -87,12 +93,9 @@ def fetch_latest_news_by_source(source):
                 except:
                     category = "General"
 
-
-
-
             save_article_unsummarized(title=article['title'], author=article['author'], url=article['url'], source=source,
                                       description=article['description'], url_to_image=article['urlToImage'],
-                                      published_at=publishedDate, nb_original_chars=originalCharCount, category =category)
+                                      published_at=publishedDate, nb_original_chars=originalCharCount, category=category)
             # #Ony save once per call
             # if DEBUG:
             #     log.info(article)
