@@ -12,6 +12,7 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
     .controller('article_pageCtrl', ['$route', '$http', '$scope', 'ngProgressFactory', function ($route, $http, $scope, ngProgressFactory) {
         $scope.progressbar = ngProgressFactory.createInstance();
         $scope.progressbar.start();
+        $scope.data_loaded = false;
         $scope.slider = {
               value: 50,
               options: {
@@ -47,6 +48,9 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
                 console.log(response);
                 var articleParsed = response.data;
 
+                if (articleParsed.summary_sentences[articleParsed.summary_sentences.length - 1] === "") {
+                    articleParsed.summary_sentences.pop();
+                }
                 if (articleParsed.ratings.length > 0) {
                     articleParsed.rated = articleParsed.ratings.find(function (currentValue) {
                         return currentValue.nb_sentences = articleParsed.summary_sentences.length;
@@ -58,11 +62,13 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
                     };
                 }
 
+
                 $scope.slider.value = Math.floor(articleParsed.sentiment * 100);
 
                 var date = Date(articleParsed.published_at);
                 articleParsed.date = date.substring(0, date.lastIndexOf(":") + 3);
                 $scope.progressbar.complete();
+                $scope.data_loaded = true;
                 $scope.article = articleParsed;
             });
 
@@ -70,7 +76,7 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
             if (!$scope.rated) {
                 $scope.article.rated.nb_thumbs_up++;
                 $scope.rated = true;
-                url = "http://bytesizenews.net:8080/thumbsup/" + $route.current.params.articleid + "/" + $scope.article.summary_sentences.length + "/";
+                url = "http://bytesizenews.net:8080/thumbsup/" + $scope.article.rated._id.$oid + "/" + $scope.article.summary_sentences.length + "/";
                 $http.get(url, config)
                     .then(function (response) {
                         console.log(response);
@@ -82,7 +88,7 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
             if (!$scope.rated) {
                 $scope.article.rated.nb_thumbs_down++;
                 $scope.rated = true;
-                url = "http://bytesizenews.net:8080/thumbsdown/" + $route.current.params.articleid + "/" + $scope.article.summary_sentences.length + "/";
+                url = "http://bytesizenews.net:8080/thumbsdown/" + $scope.article.rated._id.$oid + "/" + $scope.article.summary_sentences.length + "/";
                 $http.get(url, config)
                     .then(function (response) {
                         console.log(response);

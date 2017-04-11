@@ -170,48 +170,50 @@ def save_source(id, category, name, description, language, country, sortBysAvail
             log.info("New Source:{0} failed to be saved into db".format(id))
 
 
-def addRating(isUp, article_id, nbSentences):
+def addRating(isUp, ratingID, nbSentences):
     """
     Increments the number of thumbs up or down for an article for a given number of sentences
     :param isUp:
-    :param article_id:
+    :param ratingID:
     :param nbSentences:
     :return:
     """
     try:
-        article = Article.objects.get(id=article_id)
-        rating = None
-
-        for ratingCandidate in article.ratings:
-            if rating.nb_sentences == nbSentences:
-                rating = ratingCandidate
-                break
+        rating = Rating.objects.get(id=ratingID)
+        # article = Article.objects.get(id=article_id)
+        # rating = None
+        #
+        # for ratingCandidate in article.ratings:
+        #     if ratingCandidate.nb_sentences == nbSentences:
+        #         rating = ratingCandidate
+        #         break
 
         if rating is not None:
             if isUp:
                 rating.nb_thumbs_up += 1
-                log.info("Number of thumbs up incremented for article " + article_id + " for " + nbSentences)
+                log.info("Number of thumbs up incremented for article " + ratingID + " for " + nbSentences)
             else:
                 rating.nb_thumbs_down += 1
-                log.info("Number of thumbs down incremented for article " + article_id + " for " + nbSentences)
+                log.info("Number of thumbs down incremented for article " + ratingID + " for " + nbSentences)
 
-            rating.save()
-        else:
-            # Must have been summarized without a rating object
-            if isUp:
-                rating = Rating(nb_thumbs_up=1, nb_thumbs_down=0, nb_sentences=nbSentences, nb_views=0)
-                log.info("Number of thumbs up incremented for article " + article_id + " for " + nbSentences)
-            else:
-                rating = Rating(nb_thumbs_up=0, nb_thumbs_down=1, nb_sentences=nbSentences, nb_views=0)
-                log.info("Number of thumbs down incremented for article " + article_id + " for " + nbSentences)
-
-            rating.save()
-            article.ratings.append(rating)
-            article.save()
+            rating.save(cascade=True)
+            # article.save()
+        # else:
+        #     # Must have been summarized without a rating object
+        #     if isUp:
+        #         rating = Rating(nb_thumbs_up=1, nb_thumbs_down=0, nb_sentences=nbSentences, nb_views=0)
+        #         log.info("Number of thumbs up incremented for article " + article_id + " for " + nbSentences)
+        #     else:
+        #         rating = Rating(nb_thumbs_up=0, nb_thumbs_down=1, nb_sentences=nbSentences, nb_views=0)
+        #         log.info("Number of thumbs down incremented for article " + article_id + " for " + nbSentences)
+        #
+        #     rating.save()
+        #     article.ratings.append(rating)
+        #     article.save()
 
         return json.dumps("{'status':'Done!'}")
 
-    except Article.DoesNotExist:
+    except Rating.DoesNotExist:
         return json.dumps("{'status':'Does not exist Error'}")
 
 
@@ -224,7 +226,13 @@ def needs_to_be_resummarized(article):
 
     # get latest rating
     rating = article.ratings[-1]
-    if rating.nb_thumbs_down/rating.nb_thumbs_up > 3.0:
+
+    rating_thumbs_up = rating.nb_thumbs_up
+
+    if rating.nb_thumbs_up == 0:
+        rating_thumbs_up = 1
+
+    if rating.nb_thumbs_down/rating_thumbs_up > 3.0:
         return True
     else:
         return False

@@ -1,4 +1,5 @@
 from mongoengine import *
+from bson import json_util
 
 
 class Rating(Document):
@@ -65,3 +66,19 @@ class Article(Document):
             author=self.author,
             title=self.title,
             description=self.description)
+
+    def to_json(self):
+        mongo_article = self.to_mongo() # pymongo representtion of the doc
+
+        # Replace the source with the mongo representation of that
+        mongo_article["source"] = Source.objects.get(id=str(mongo_article["source"])).to_mongo()
+
+        #Replace ratings with their mongo representation as well
+        temp_list = []
+        for mongo_rating_obj in mongo_article["ratings"]:
+            temp_list.append(Rating.objects.get(id=str(mongo_rating_obj)).to_mongo())
+
+        #overwrite the articles
+        mongo_article["ratings"] = temp_list
+        return json_util.dumps(mongo_article)
+
