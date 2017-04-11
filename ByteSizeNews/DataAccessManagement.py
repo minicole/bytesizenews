@@ -119,7 +119,7 @@ def get_articles_from_category(category="General",
         log.info("Returns:{0} Articles".format(len(article_list)))
         if len(article_list):
             return_json_list = [article.as_small_json() for article in article_list]
-            log.info(return_json_list)
+            # log.info(return_json_list)
             return json.dumps(return_json_list)
 
 

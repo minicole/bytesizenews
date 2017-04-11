@@ -108,24 +108,31 @@ def fetch_latest_news_by_source(source):
 
                 # Two passes on classification
                 classifyRequest = classify_api_format.format(settings.UCLASSIFY_KEY[0], urlencodedText)
-                print(classifyRequest)
+                # print(classifyRequest)
                 classifyResponse = requests.get(classifyRequest, verify=False)
                 jsonClassifyResponse = classifyResponse.json()
-                log.info(jsonClassifyResponse)
+                # log.info(jsonClassifyResponse)
 
+                secondPass = False
                 # Pass 2:
                 if 'statusCode' in jsonClassifyResponse:
                     if jsonClassifyResponse['statusCode'] == 400:
                         classifyRequest = classify_api_format.format(settings.UCLASSIFY_KEY[1], urlencodedText)
                         classifyResponse = requests.get(classifyRequest, verify=False)
                         jsonClassifyResponse = classifyResponse.json()
-                        log.info(jsonClassifyResponse)
+                        # log.info(jsonClassifyResponse)
+                        log.info("Failed to classify after one pass")
+                        secondPass = True
+                else:
+                    log.info("Classified after one pass")
 
                 # if fail,
                 if 'statusCode' in jsonClassifyResponse:
                     if jsonClassifyResponse['statusCode'] == 400:
-                        log.info("Failed to classify")
+                        log.info("Failed to classify after two passes")
                 else:
+                    if secondPass:
+                        log.info("Classified after two passes")
                     # Can finally categorize
                     max_key_val = 0
 
