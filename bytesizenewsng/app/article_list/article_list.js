@@ -8,9 +8,10 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
             controller: 'article_listCtrl'
         });
     }])
-
     .controller('article_listCtrl', ['$scope', '$http', '$route', '$window', '$location', 'ngProgressFactory', function ($scope, $http, $route, $window, $location, ngProgressFactory) {
         $scope.progressbar = ngProgressFactory.createInstance();
+        $scope.progressbar.setHeight("5px");
+        $scope.progressbar.setColor("#f04641");
         $scope.progressbar.start();
         var randomColor = function() {
             var letters = '0123456789ABCDEF';
@@ -33,19 +34,21 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
                 console.log(response);
                 var articlesParsed = response.data;
                 var articles = [];
-                for (var i = articlesParsed.length - 1; i >= 0; i--) {
-                    var article = articlesParsed[i];
-                    if (article.url_to_image) {
-                        article.background = "background-image: url(" + article.url_to_image + ")";
-                    } else {
-                        article.background = "background-color: " + randomColor();
+                if (typeof articlesParsed === "object") {
+                    for (var i = articlesParsed.length - 1; i >= 0; i--) {
+                        var article = articlesParsed[i];
+                        if (article.url_to_image) {
+                            article.background = "background-image: url(" + article.url_to_image + ")";
+                        } else {
+                            article.background = "background-color: " + randomColor();
+                        }
+                        var d = new Date(article.published_at);
+                        article.hours = Math.floor((Date.now() - d.getTime()) / 1000 / 60 / 60);
+                        if (article.description === undefined || article.description === "") {
+                            article.description = "no description";
+                        }
+                        articles.push(article);
                     }
-                    var d = new Date(article.published_at);
-                    article.hours = Math.floor((Date.now() - d.getTime()) / 1000 / 60 / 60);
-                    if (article.description === undefined || article.description === "") {
-                        article.description = "no description";
-                    }
-                    articles.push(article);
                 }
                 $scope.progressbar.complete();
                 $scope.articles = articles;
@@ -61,3 +64,4 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
             }
         }
     }]);
+
