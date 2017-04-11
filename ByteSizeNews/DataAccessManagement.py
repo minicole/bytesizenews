@@ -92,7 +92,7 @@ def get_articles_from_category(category="General",
     time_threshold = datetime.utcnow() - time_delta_ago
 
     # Get all Articles with source in english
-    source_list = Source.objects.filter(Q(description__contains=category) | Q(category=category))
+    # source_list = Source.objects.filter(Q(description__contains=category) | Q(category=category))
 
     source_list = Source.objects.filter(language='en').filter(country__in=countries)
 
