@@ -152,5 +152,10 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
+        'bytesizenews': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
     },
 }
