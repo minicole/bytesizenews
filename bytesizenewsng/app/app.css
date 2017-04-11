@@ -49,7 +49,27 @@
 }
 
 .navbar-fixed-top {
-    background: white;
+    background: #333;
+    overflow = hidden;
+}
+
+.navbar a {
+    float: left;
+    display: block;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.navbar a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+.navbar li.active{
+    background-color: #4CAF50;
+    color: white;
 }
 
 .navbar-fixed-bottom {
