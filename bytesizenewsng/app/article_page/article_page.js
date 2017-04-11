@@ -68,7 +68,7 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
                         return currentValue.nb_sentences = articleParsed.summary_sentences.length;
                     });
                     if (articleParsed.nb_original_chars && articleParsed.rated.nb_summarized_chars) {
-                        articleParsed.compression = Math.floor(articleParsed.rated.nb_summarized_chars / articleParsed.nb_original_chars * 100) + "%";
+                        articleParsed.compression = 100 - Math.floor(articleParsed.rated.nb_summarized_chars / articleParsed.nb_original_chars * 100) + "%";
                     } else {
                         articleParsed.compression = "unknown";
                     }
@@ -91,6 +91,11 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
                         }
                         var d = new Date(article.published_at);
                         article.hours = Math.floor((Date.now() - d.getTime()) / 1000 / 60 / 60);
+                        if (article.hours <= 0) {
+                            article.hours = "Just now";
+                        } else {
+                            article.hours = article.hours + " hours since posted";
+                        }
                         if (article.description === undefined || article.description === "") {
                             article.description = "no description";
                         }

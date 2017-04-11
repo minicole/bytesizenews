@@ -26,10 +26,10 @@
 
 .see-over-image {
     color: white;
-    text-shadow: -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-    1px 1px 0 #000;
+    text-shadow: -2px -2px 0 #000,
+    2px -2px 0 #000,
+    -2px 2px 0 #000,
+    2px 2px 0 #000;
 }
 
 .article-background-square {
@@ -57,7 +57,7 @@
     overflow : hidden;
 }
 
-.navbar a {
+.navbar-fixed-top a {
     float: left;
     display: block;
     text-align: center;
@@ -67,15 +67,15 @@
     color: white;
 }
 
-.navbar a:hover {
+.navbar-fixed-top a:hover {
     background-color: lightgray;
     color: black;
 }
 
-.navbar li.active {
+.navbar-fixed-top li.active {
     background-color: lightgray;
 }
-.navbar li.active a{
+.navbar-fixed-top li.active a{
     color: black;
 }
 
@@ -109,4 +109,29 @@
 .slogan {
     font-family: Roboto;
     font-size: 32px;
+}
+
+a.newsapi {
+    color: blue;
+}
+
+footer {
+    background-color: rgba(236, 231, 234, 0.5);
+    padding: 15px 5px;
+}
+
+.article-background-square h2 {
+    height: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.article-background-square .author {
+    height: 19px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.article-background-square h3 {
+    margin-top: 10px;
 }

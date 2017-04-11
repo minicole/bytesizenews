@@ -1,6 +1,6 @@
 <div class="col-md-4 article-background-square" ng-repeat="article in articles" style="{{ article.background }}" ng-click="goToArticle(article.id)">
     <h2 class="see-over-image" tooltips tooltip-template="{{ article.description }}" tooltip-side="down">{{ article.title }}</h2>
-    <h5 class="see-over-image">{{ article.author }}</h5>
-    <h4 class="see-over-image">{{ article.source.source_name }}</h4>
-    <h5 class="see-over-image bottom-right">{{ article.hours }} hours since posted</h5>
+    <h4 class="see-over-image author">{{ article.author }}</h4>
+    <h3 class="see-over-image">{{ article.source.source_name }}</h3>
+    <h4 class="see-over-image bottom-right">{{ article.hours }}</h4>
 </div>
