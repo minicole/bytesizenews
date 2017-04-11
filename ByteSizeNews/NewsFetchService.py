@@ -59,13 +59,13 @@ def fetch_latest_news_by_source(source):
             break
 
     category = "General"  # default category
-    originalCharCount = 0 # Default char count
+    originalCharCount = 0# Default char count
 
     apirequest = article_api_request_format.format(source.source_id, sortBy, settings.NEWS_KEY)
     r = requests.get(apirequest)
     jsonresponse = r.json()
     if jsonresponse['status'] == "ok":
-        articles = jsonresponse['articles']# gives array of latest articles
+        articles = jsonresponse['articles']  #gives array of latest articles
 
         for article in articles:
 
@@ -108,7 +108,8 @@ def fetch_latest_news_by_source(source):
 
                 # Two passes on classification
                 classifyRequest = classify_api_format.format(settings.UCLASSIFY_KEY[0], urlencodedText)
-                classifyResponse = requests.get(classifyRequest)
+                print(classifyRequest)
+                classifyResponse = requests.get(classifyRequest, verify=False)
                 jsonClassifyResponse = classifyResponse.json()
                 log.info(jsonClassifyResponse)
 
@@ -116,7 +117,7 @@ def fetch_latest_news_by_source(source):
                 if 'statusCode' in jsonClassifyResponse:
                     if jsonClassifyResponse['statusCode'] == 400:
                         classifyRequest = classify_api_format.format(settings.UCLASSIFY_KEY[1], urlencodedText)
-                        classifyResponse = requests.get(classifyRequest)
+                        classifyResponse = requests.get(classifyRequest, verify=False)
                         jsonClassifyResponse = classifyResponse.json()
                         log.info(jsonClassifyResponse)
 
@@ -149,6 +150,7 @@ def dandelion_entity_extraction(dKey, url):
     jsonEntityRepsonse = entityResponse.json()
     log.info(jsonEntityRepsonse)
     originalCharCount = 0
+    unsummarized_text = ""
     if 'text' in jsonEntityRepsonse:
         unsummarized_text = jsonEntityRepsonse['text'].encode('ascii', 'ignore')
         originalCharCount = len(unsummarized_text)
@@ -164,6 +166,7 @@ def lateral_entity_extraction(url):
     jsonEntityRepsonse = entityResponse.json()
     log.info(entityResponse.text.encode('ascii', 'ignore'))
     originalCharCount = 0
+    unsummarized_text = ""
     if 'body' in jsonEntityRepsonse:
         unsummarized_text = jsonEntityRepsonse['body'].encode('ascii', 'ignore')
         originalCharCount = len(unsummarized_text)
