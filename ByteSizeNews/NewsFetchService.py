@@ -16,7 +16,7 @@ article_api_request_format = "https://newsapi.org/v1/articles?source={0}&sortBy=
 source_api_request_format = "https://newsapi.org/v1/sources?language={0}&category={1}&country={2}"
 entity_extraction_format = "https://api.dandelion.eu/datatxt/nex/v1/?url={0}&include=types%2Ccategories&token={1}"
 classify_api_format = "https://api.uclassify.com/v1/uclassify/topics/Classify?readkey={0}&text={1}"
-all_source_api_request = "https://newsapi.org/v1/sources"
+all_source_api_request = "https://newsapi.org/v1/sources?language=en"
 # Order to go through for sorts as available
 available_sorts = ["latest", "popular", "top"]
 
@@ -28,7 +28,8 @@ def fetch_and_save_latest_news():
     Fetch all new news articles, sorted by latest sort if available, otherwise popular then top
     :return: 
     """
-    all_sources = Source.objects.all()
+    # Only want english now
+    all_sources = Source.objects.filter(language="en")
 
     for source in all_sources:
         # ignore all articles from blacklisted sources

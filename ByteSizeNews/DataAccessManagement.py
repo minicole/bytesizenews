@@ -28,7 +28,7 @@ def get_all_categories():
     #         "music", "politics", "science-and-nature", "sport", "technology"]
         return json.dumps({'categories': categorieslist})
 
-
+3
 def get_all_languages():
     return Source.objects.distinct(field='language')
 
@@ -75,7 +75,7 @@ def get_article_by_id(article_id):
 
 
 # TODO: Replace category with a list
-def get_articles_from_category(category="general",
+def get_articles_from_category(category="General",
                                time_delta_ago=timedelta(days=TIME_THRESHOLD_CONSTANT_DAYS,
                                                         hours=TIME_THRESHOLD_CONSTANT_HOURS),
                                languages=DEFAULT_LANGUAGES_LIST,
@@ -92,15 +92,29 @@ def get_articles_from_category(category="general",
 
     time_threshold = datetime.utcnow() - time_delta_ago
 
-    # Get all sources with that category, language and country
+    # Get all Articles with source in english
     source_list = Source.objects.filter(Q(description__contains=category) | Q(category=category))
 
-    source_list = source_list.filter(language__in=languages).filter(country__in=countries)
+    source_list = Source.objects.filter(language='en').filter(country__in=countries)
 
     if len(source_list) > 0:
         article_list = Article.objects.filter(source__in=source_list)\
             .filter(published_at__gt=time_threshold)\
             .order_by('published_at')
+
+        # Some exceptions for categories
+
+        if category=="General":
+            categories = ["General", "general", "Recreation"]
+        else:
+            categories = [category]
+
+        duplicate_article_list = []
+        for cat in categories:
+            duplicate_article_list.append(article_list.filter(Q(category=cat)))
+
+        setArticles = set(duplicate_article_list)
+        article_list = list(setArticles)
 
         if len(article_list):
             return_json_list = [article.as_small_json() for article in article_list]
