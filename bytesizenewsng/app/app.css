@@ -1,63 +1,64 @@
 /* app css stylesheet */
 
 .menu {
-  list-style: none;
-  border-bottom: 0.1em solid black;
-  margin-bottom: 2em;
-  padding: 0 0 0.5em;
+    list-style: none;
+    border-bottom: 0.1em solid black;
+    margin-bottom: 2em;
+    padding: 0 0 0.5em;
 }
 
 .menu:before {
-  content: "[";
+    content: "[";
 }
 
 .menu:after {
-  content: "]";
+    content: "]";
 }
 
 .menu > li {
-  display: inline;
+    display: inline;
 }
 
 .menu > li + li:before {
-  content: "|";
-  padding-right: 0.3em;
+    content: "|";
+    padding-right: 0.3em;
 }
 
 .see-over-image {
     color: white;
-    text-shadow:
-    -1px -1px 0 #000,
+    text-shadow: -1px -1px 0 #000,
     1px -1px 0 #000,
     -1px 1px 0 #000,
     1px 1px 0 #000;
 }
 
 .article-background-square {
-  height:300px;
-  background-position: center center;
+    height: 300px;
+    background-position: center center;
     border: white 5px solid;
+    cursor: pointer;
 }
 
 .bs-docs-header {
-  padding-top: 50px;
-  padding-bottom: 15px;
+    padding-top: 50px;
+    padding-bottom: 15px;
 }
 
 .ratings {
-  padding-top: 25px;
+    padding-top: 25px;
 }
 
 .navbar-fixed-top {
-  background: white;
+    background: white;
 }
+
 .navbar-fixed-bottom {
-  left: inherit;
-  right: 5px;
+    left: inherit;
+    right: 5px;
 }
 
 .thumbs {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .bottom-right {
@@ -65,7 +66,7 @@
 }
 
 .logo {
-    max-width:50%;
+    max-width: 50%;
 }
 
 .icon-bar {
