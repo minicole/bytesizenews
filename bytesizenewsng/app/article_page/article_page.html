@@ -7,10 +7,11 @@
 
     </div>
     <div class="col-md-8">
-        <ul>
+        <ul ng-show="articleIsSummarized">
             <li ng-repeat="sentence in article.summary_sentences">{{ sentence }} </li>
         </ul>
-        <div class="row ratings">
+        <p ng-show="!articleIsSummarized">{{ article.description }}</p>
+        <div class="row ratings" ng-show="articleIsSummarized">
             <div class="col-md-3"><label>Rate this summary:</label></div>
             <div class="col-md-1"><span class="thumbs" ng-click="rateThumbsUp()">&#x1F44D;</span> {{ article.rated.nb_thumbs_up }}</div>
             <div class="col-md-1"><span class="thumbs" ng-click="rateThumbsDown()">&#x1F44E;</span> {{ article.rated.nb_thumbs_down }}</div>
@@ -19,7 +20,7 @@
         </div>
     </div>
     <div class="col-md-4">
-        <div class="row">
+        <div class="row" ng-show="articleIsSummarized">
             <div class="col-md-4">
                 Sentiment:
             </div>

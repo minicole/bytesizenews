@@ -55,14 +55,25 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
             url += $route.current.params.articleid + '/';
         }
 
+        function decodeHtml(html) {
+            html = html.replace(/&quot;/g, '\'');
+            var txt = document.createElement("textarea");
+            txt.innerHTML = html;
+            return txt.value;
+        }
+
         $http.get(url, config)
             .then(function (response) {
                 console.log(response);
                 var articleParsed = response.data;
+                articleParsed = JSON.stringify(articleParsed);
+                articleParsed = decodeHtml(articleParsed);
+                articleParsed = JSON.parse(articleParsed);
 
-                if (articleParsed.summary_sentences === undefined) {
-                    articleParsed.summary_sentences = articleParsed.description;
+                if (articleParsed.summary_sentences === undefined || articleParsed.summary_sentences.length === 0) {
+                    $scope.articleIsSummarized = false;
                 } else {
+                    $scope.articleIsSummarized = true;
                     if (articleParsed.summary_sentences[articleParsed.summary_sentences.length - 1] === "") {
                         articleParsed.summary_sentences.pop();
                     }

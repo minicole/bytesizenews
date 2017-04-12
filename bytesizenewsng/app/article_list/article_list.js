@@ -35,6 +35,7 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
         if ($route.current.params.category && $route.current.params.category !== "all") {
             url += $route.current.params.category.toLowerCase() + '/';
         }
+        $scope.loaded = false;
 
         $http.get(url, config)
             .then(function (response) {
@@ -50,7 +51,9 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
                             article.background = "background-color: " + randomColor();
                         }
                         var d = new Date(article.published_at);
-                        article.hours = Math.floor((Date.now() - d.getTime()) / 1000 / 60 / 60);
+                        var now = new Date().getTime();
+                        article.timeSince = now - d.getTime();
+                        article.hours = Math.floor(article.timeSince / 1000 / 60 / 60);
                         if (article.hours <= 0) {
                             article.hours = "Just now";
                         } else {
@@ -61,9 +64,16 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
                         }
                         articles.push(article);
                     }
+
+                    var articlesSorted = articles.sort(function(item1, item2) {
+                        if (item1.timeSince < item2.timeSince) return -1;
+                        if (item1.timeSince > item2.timeSince) return 1;
+                        return 0;
+                    });
                 }
+                $scope.loaded = true;
                 $scope.progressbar.complete();
-                $scope.articles = articles;
+                $scope.articles = articlesSorted;
             });
 
         $scope.goToArticle = function (articleid) {
@@ -85,6 +95,8 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
             var newUrl = $location.$$absUrl.substring(0, $location.$$absUrl.indexOf("/#!/")) + "/#!/article_list/";
             if ($route.current.params.category) {
                 newUrl += $route.current.params.category.toLowerCase() + '/';
+            } else {
+                newUrl += "all/"
             }
             newUrl += page + "/";
             if ($scope.$$phase)
