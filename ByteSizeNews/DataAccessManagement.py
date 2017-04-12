@@ -156,11 +156,8 @@ def get_articles_from_category(category="General",
             return_json_list = [article.as_small_json() for article in article_list]
             # log.info(return_json_list)
 
-            json_string_list = json.dumps(return_json_list)
-
-            return_json = json.loads(json_string_list.to_json())
-
-            return_json['has_next_page'] = hasNextPage
+            return_json = {"articles": return_json_list,
+                           "hasNextPage": hasNextPage}
 
             return json.dumps(return_json)
 
