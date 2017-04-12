@@ -91,7 +91,8 @@ def get_articles_from_category(category="General",
                                time_delta_ago=timedelta(days=TIME_THRESHOLD_CONSTANT_DAYS,
                                                         hours=TIME_THRESHOLD_CONSTANT_HOURS),
                                languages=DEFAULT_LANGUAGES_LIST,
-                               countries=get_all_countries()):
+                               countries=get_all_countries(),
+                               pageNumber=1):
     """
     
     :param category: Possible options: business, entertainment, gaming, general, 
@@ -112,7 +113,7 @@ def get_articles_from_category(category="General",
     if len(source_list) > 0:
         article_list = Article.objects.filter(source__in=source_list)\
             .filter(published_at__gt=time_threshold)\
-            .order_by('published_at')
+            .order_by('-published_at')
 
         # Some exceptions for categories
 
@@ -130,6 +131,11 @@ def get_articles_from_category(category="General",
 
         setArticles = set(duplicate_article_list)
         article_list = list(setArticles)
+
+        # Truncate based on page #
+        del article_list[:(pageNumber-1)*100]
+        del article_list[pageNumber*100:]
+
         log.info("Returns:{0} Articles for categories:{1}".format(len(article_list), categories))
         if len(article_list):
             return_json_list = [article.as_small_json() for article in article_list]
@@ -141,7 +147,7 @@ def update_sentiment_article(article):
     return get_sentiment(article)
 
 
-def update_summarized_article(article, nb_sentances=7):
+def update_summarized_article(article, nb_sentances=5):
     return summarize(article, nb_sentances)
 
 
@@ -278,9 +284,23 @@ def needs_to_be_resummarized(article):
 
 
 def similar_articles(article):
+    """
+    Returns similar articles to the one viewed published within +-12 Hours
+    First similarity to already summarized articles, then to non via description
+    :param article: 
+    :return: 
+    """
     keyWordList = article.keywords
     keyWordSet = set(keyWordList)
-    candidateList = Article.objects.filter(keywords__in=keyWordList)
+
+    minTime = article.published_at-timedelta(hours=12)
+    maxTime = article.published_at+timedelta(hours=12)
+
+    initial_candidateList = Article.objects.\
+        filter(published_at__gt=minTime).\
+        filter(published_at__lt=maxTime)
+
+    candidateList = initial_candidateList.filter(keywords__in=keyWordList)
 
     # Assign score by article in terms of number of keywords that intersect
     similarityScoreTupleList = []
@@ -301,6 +321,32 @@ def similar_articles(article):
 
         if len(returnList) == similar_list_max:
             break
+
+    # if keywords wasn't enough fill rest with similar ones based on article keywords all found in description
+    if len(returnList) < 4:
+        newCandidateList = []
+
+        for keyword in article.keywords:
+            # initialize on first pass
+            if len(initial_candidateList) == 0:
+                newCandidateList = initial_candidateList
+
+            templist = newCandidateList
+            newCandidateList = newCandidateList.filter(description__icontains=keyword)
+
+            #One filter too much, break out with old values
+            if len(newCandidateList) == 0:
+                newCandidateList = templist
+                break
+
+        if len(newCandidateList) > 0:
+            newCandidateList.order_by('-published_date')
+
+            for newArticle in newCandidateList:
+                returnList.append(newArticle)
+
+            # Truncate to 4
+            del returnList[4:]
 
     return returnList
 
