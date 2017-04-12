@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
+angular.module('myApp.article_page', ['ngRoute', 'ngProgress', 'rzModule'])
 
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/article_page/:articleid?', {
@@ -11,10 +11,10 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
 
     .controller('article_pageCtrl', ['$route', '$http', '$scope', 'ngProgressFactory', '$window', '$location', function ($route, $http, $scope, ngProgressFactory, $window, $location) {
 
-        var randomColor = function() {
+        var randomColor = function () {
             var letters = '0123456789ABCDEF';
             var color = '#';
-            for (var i = 0; i < 6; i++ ) {
+            for (var i = 0; i < 6; i++) {
                 color += letters[Math.floor(Math.random() * 16)];
             }
             return color;
@@ -26,17 +26,17 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
         $scope.progressbar.start();
         $scope.data_loaded = false;
         $scope.slider = {
-              value: 50,
-              options: {
+            value: 50,
+            options: {
                 floor: 0,
                 ceil: 100,
-                  readOnly: true,
-                  showSelectionBar: true,
-                  selectionBarGradient: {
-                      from: 'red',
-                      to: 'green'
-                  },
-                  getPointerColor: function(value) {
+                readOnly: true,
+                showSelectionBar: true,
+                selectionBarGradient: {
+                    from: 'red',
+                    to: 'green'
+                },
+                getPointerColor: function (value) {
                     if (value <= 25)
                         return 'red';
                     if (value <= 50)
@@ -45,8 +45,17 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
                         return 'yellow';
                     return 'green';
                 }
-              }
-            };
+            }
+        };
+
+        $scope.slider_compression = {
+            value: 50,
+            options: {
+                floor: 0,
+                ceil: 100,
+                readOnly: true
+            }
+        };
         var config = {headers: {}};
         $scope.rated = false;
         var url = 'http://bytesizenews.net:8080/article/';
@@ -83,9 +92,11 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
                         //     return currentValue.nb_sentences = articleParsed.summary_sentences.length;
                         // });
                         if (articleParsed.nb_original_chars && articleParsed.rated.nb_summarized_chars) {
-                            articleParsed.compression = 100 - Math.floor(articleParsed.rated.nb_summarized_chars / articleParsed.nb_original_chars * 100) + "%";
+                            articleParsed.compression = 100 - Math.floor(articleParsed.rated.nb_summarized_chars / articleParsed.nb_original_chars * 100);
+                            $scope.slider_compression.value = articleParsed.compression;
                         } else {
                             articleParsed.compression = "unknown";
+                            $scope.slider_compression.value = 0;
                         }
                     } else {
                         articleParsed.rated = {
@@ -93,6 +104,7 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
                             nb_thumbs_down: 0
                         };
                         articleParsed.compression = "unknown";
+                        $scope.slider_compression.value = 0;
                     }
                 }
 
@@ -159,7 +171,7 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
             }
         };
 
-        $scope.goToArticle = function(articleid) {
+        $scope.goToArticle = function (articleid) {
             var newUrl = $location.$$absUrl.substring(0, $location.$$absUrl.indexOf("/#!/")) + "/#!/article_page/" + articleid;
             if ($scope.$$phase)
                 $window.location.href = newUrl;
@@ -169,8 +181,9 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
             }
         };
 
-        $scope.$on("$destroy", function() {
+        $scope.$on("$destroy", function () {
             $scope.progressbar.complete();
         });
+
     }]);
 

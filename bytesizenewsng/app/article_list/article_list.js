@@ -37,10 +37,38 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
         }
         $scope.loaded = false;
 
-        $http.get(url, config)
-            .then(function (response) {
-                console.log(response);
-                var articlesParsed = response.data;
+        $scope.timeOptions = [
+            {
+                "key": "last hour",
+                "hours": 1,
+                "days": 0
+            },
+            {
+                "key": "last 5 hours",
+                "hours": 5,
+                "days": 0
+            },
+            {
+                "key": "last 12 hours",
+                "hours": 12,
+                "days": 0
+            },
+            {
+                "key": "last day",
+                "hours": 0,
+                "days": 1
+            },
+            {
+                "key": "last 3 days",
+                "hours": 0,
+                "days": 3
+            }
+        ];
+
+        var processArticles = function(response) {
+            console.log(response);
+                var articlesParsed = response.data.articles;
+                $scope.hasNextPage = response.data.hasNextPage;
                 var articles = [];
                 if (typeof articlesParsed === "object") {
                     for (var i = articlesParsed.length - 1; i >= 0; i--) {
@@ -74,6 +102,11 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
                 $scope.loaded = true;
                 $scope.progressbar.complete();
                 $scope.articles = articlesSorted;
+        };
+
+        $http.get(url, config)
+            .then(function (response) {
+                processArticles(response);
             });
 
         $scope.goToArticle = function (articleid) {
@@ -88,7 +121,7 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
 
         $scope.showPrev = function() {
             return parseInt($scope.page_nb) > 1;
-        }
+        };
 
         $scope.goToNextPrevPage = function (pageDirection) {
             var page = parseInt($scope.page_nb) + pageDirection;
@@ -110,6 +143,35 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
         $scope.$on("$destroy", function () {
             $scope.progressbar.complete();
         });
-    }]);
+
+        $scope.performSearch= function() {
+            var query = "http://bytesizenews.net:8080/search/";
+            query += $scope.page_nb + "/";
+            var timeQuery = JSON.parse($scope.search_date);
+            if (timeQuery) {
+                query += timeQuery.hours + "/";
+                query += timeQuery.days + "/";
+            } else {
+                query += 0 + "/";
+                query += 0 + "/";
+            }
+            query += encodeURI($scope.search_query) + "/";
+          $http({method: 'GET', url: query}).
+            success(function(data, status, headers, config) {
+                processArticles(data);
+            })
+        }
+    }]).directive('myOnKeyDownCall', function () {
+    return function (scope, element, attrs) {
+        element.bind("keydown keypress", function (event) {
+            if (event.keyCode == 13) {
+                scope.$apply(function () {
+                    scope.$eval(attrs.myOnKeyDownCall);
+                });
+                event.preventDefault();
+            }
+        });
+    };
+});
 
 

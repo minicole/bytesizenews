@@ -1,5 +1,7 @@
 /* app css stylesheet */
 
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
 .menu {
     list-style: none;
     border-bottom: 0.1em solid black;
@@ -135,4 +137,8 @@ footer {
 
 .article-background-square h3 {
     margin-top: 10px;
+}
+
+.rz-bubble::after {
+    content: "%";
 }

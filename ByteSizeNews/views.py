@@ -42,6 +42,17 @@ def get_articles_from_category(request, category, page):
 
 
 @csrf_exempt
+def get_articles_from_search(request, page, hours, days, query):
+    articles = DataAccessManagement.find_articles_by_keywords_and_time(query, hours, days, page)
+    resp = HttpResponse(articles)
+    resp.setdefault("Access-Control-Allow-Origin", "*")
+    resp.setdefault('Access-Control-Allow-Methods', 'GET, POST')
+    resp.setdefault("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token")
+
+    return resp
+
+
+@csrf_exempt
 def get_article(request, articleID):
     article = DataAccessManagement.get_article_by_id(articleID)
     resp = HttpResponse(article)
