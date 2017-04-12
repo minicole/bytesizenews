@@ -19,8 +19,8 @@ from ByteSizeNews import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^articles/(?P<category>[a-zA-Z]+)/', views.get_articles_from_category),
-    url(r'^articles/',views.get_all_articles),
+    url(r'^articles/(?P<page>[0-9]+)/(?P<category>[a-zA-Z]+)/', views.get_articles_from_category),
+    url(r'^articles/(?P<page>[0-9]+)/',views.get_all_articles),
     url(r'^article/(?P<articleID>[0-9a-zA-Z]+)/', views.get_article),
     url(r'^thumbsup/(?P<ratingID>[0-9a-zA-Z]+)/(?P<nbSentences>[0-9]+)/', views.thumbsUp),
     url(r'^thumbsdown/(?P<ratingID>[0-9a-zA-Z]+)/(?P<nbSentences>[0-9]+)/', views.thumbsDown),
