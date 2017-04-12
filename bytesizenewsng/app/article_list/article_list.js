@@ -67,6 +67,10 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
                 $location.path(newUrl);
                 $scope.$apply();
             }
-        }
+        };
+
+        $scope.$on("$destroy", function() {
+            $scope.progressbar.complete();
+        });
     }]);
 

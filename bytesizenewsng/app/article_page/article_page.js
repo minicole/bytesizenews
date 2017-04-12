@@ -67,9 +67,10 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
                         articleParsed.summary_sentences.pop();
                     }
                     if (articleParsed.ratings.length > 0) {
-                        articleParsed.rated = articleParsed.ratings.find(function (currentValue) {
-                            return currentValue.nb_sentences = articleParsed.summary_sentences.length;
-                        });
+                        articleParsed.rated = articleParsed.ratings[articleParsed.ratings.length - 1];
+                        // articleParsed.rated = articleParsed.ratings.find(function (currentValue) {
+                        //     return currentValue.nb_sentences = articleParsed.summary_sentences.length;
+                        // });
                         if (articleParsed.nb_original_chars && articleParsed.rated.nb_summarized_chars) {
                             articleParsed.compression = 100 - Math.floor(articleParsed.rated.nb_summarized_chars / articleParsed.nb_original_chars * 100) + "%";
                         } else {
@@ -84,33 +85,40 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
                     }
                 }
 
-                var articles = [];
-                if (typeof articleParsed.similar_articles === "object") {
-                    for (var i = articleParsed.similar_articles.length - 1; i >= 0; i--) {
-                        var article = articleParsed.similar_articles[i];
-                        if (article.url_to_image) {
-                            article.background = "background-image: url(" + article.url_to_image + ")";
-                        } else {
-                            article.background = "background-color: " + randomColor();
+                if (articleParsed.similar_articles !== undefined) {
+                    var articles = [];
+                    articleParsed.similar_articles = JSON.parse(articleParsed.similar_articles);
+                    if (typeof articleParsed.similar_articles === "object") {
+                        for (var i = articleParsed.similar_articles.length - 1; i >= 0; i--) {
+                            var article = articleParsed.similar_articles[i];
+                            if (article.url_to_image) {
+                                article.background = "background-image: url(" + article.url_to_image + ")";
+                            } else {
+                                article.background = "background-color: " + randomColor();
+                            }
+                            var d = new Date(article.published_at);
+                            article.hours = Math.floor((Date.now() - d.getTime()) / 1000 / 60 / 60);
+                            if (article.hours <= 0) {
+                                article.hours = "Just now";
+                            } else {
+                                article.hours = article.hours + " hours since posted";
+                            }
+                            if (article.description === undefined || article.description === "") {
+                                article.description = "no description";
+                            }
+                            articles.push(article);
                         }
-                        var d = new Date(article.published_at);
-                        article.hours = Math.floor((Date.now() - d.getTime()) / 1000 / 60 / 60);
-                        if (article.hours <= 0) {
-                            article.hours = "Just now";
-                        } else {
-                            article.hours = article.hours + " hours since posted";
-                        }
-                        if (article.description === undefined || article.description === "") {
-                            article.description = "no description";
-                        }
-                        articles.push(article);
                     }
+
+                    articleParsed.similar_articles = articles;
                 }
 
                 $scope.slider.value = Math.floor(articleParsed.sentiment * 100);
 
-                var date = new Date(articleParsed.published_at.$date);
-                articleParsed.date = date.toDateString() + " - " + date.toLocaleTimeString();
+                if (articleParsed.published_at !== undefined) {
+                    var date = new Date(articleParsed.published_at.$date);
+                    articleParsed.date = date.toDateString() + " - " + date.toLocaleTimeString();
+                }
                 $scope.progressbar.complete();
                 $scope.data_loaded = true;
                 $scope.article = articleParsed;
@@ -139,5 +147,19 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
                     });
             }
         };
+
+        $scope.goToArticle = function(articleid) {
+            var newUrl = $location.$$absUrl.substring(0, $location.$$absUrl.indexOf("/#!/")) + "/#!/article_page/" + articleid;
+            if ($scope.$$phase)
+                $window.location.href = newUrl;
+            else {
+                $location.path(newUrl);
+                $scope.$apply();
+            }
+        };
+
+        $scope.$on("$destroy", function() {
+            $scope.progressbar.complete();
+        });
     }]);
 
