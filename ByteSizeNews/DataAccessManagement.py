@@ -286,7 +286,7 @@ def similar_articles(article):
     similarityScoreTupleList = []
 
     for candidate in candidateList:
-        intersectSet = keyWordSet.intersection(candidateList.keywords)
+        intersectSet = keyWordSet.intersection(candidate.keywords)
         similarityScoreTupleList.append((candidate, len(intersectSet)))
 
     # Sort based on score
