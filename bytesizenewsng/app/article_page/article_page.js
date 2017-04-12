@@ -67,9 +67,10 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
                         articleParsed.summary_sentences.pop();
                     }
                     if (articleParsed.ratings.length > 0) {
-                        articleParsed.rated = articleParsed.ratings.find(function (currentValue) {
-                            return currentValue.nb_sentences = articleParsed.summary_sentences.length;
-                        });
+                        articleParsed.rated = articleParsed.ratings[articleParsed.ratings.length - 1];
+                        // articleParsed.rated = articleParsed.ratings.find(function (currentValue) {
+                        //     return currentValue.nb_sentences = articleParsed.summary_sentences.length;
+                        // });
                         if (articleParsed.nb_original_chars && articleParsed.rated.nb_summarized_chars) {
                             articleParsed.compression = 100 - Math.floor(articleParsed.rated.nb_summarized_chars / articleParsed.nb_original_chars * 100) + "%";
                         } else {
@@ -114,8 +115,10 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
 
                 $scope.slider.value = Math.floor(articleParsed.sentiment * 100);
 
-                var date = new Date(articleParsed.published_at.$date);
-                articleParsed.date = date.toDateString() + " - " + date.toLocaleTimeString();
+                if (articleParsed.published_at !== undefined) {
+                    var date = new Date(articleParsed.published_at.$date);
+                    articleParsed.date = date.toDateString() + " - " + date.toLocaleTimeString();
+                }
                 $scope.progressbar.complete();
                 $scope.data_loaded = true;
                 $scope.article = articleParsed;
@@ -154,5 +157,9 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
                 $scope.$apply();
             }
         };
+
+        $scope.$on("$destroy", function() {
+            $scope.progressbar.complete();
+        });
     }]);
 

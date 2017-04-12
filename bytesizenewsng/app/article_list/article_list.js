@@ -68,5 +68,9 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
                 $scope.$apply();
             }
         };
+
+        $scope.$on("$destroy", function() {
+            $scope.progressbar.complete();
+        });
     }]);
 
