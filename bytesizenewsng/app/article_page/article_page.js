@@ -9,7 +9,7 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
         });
     }])
 
-    .controller('article_pageCtrl', ['$route', '$http', '$scope', 'ngProgressFactory', function ($route, $http, $scope, ngProgressFactory) {
+    .controller('article_pageCtrl', ['$route', '$http', '$scope', 'ngProgressFactory', '$window', '$location', function ($route, $http, $scope, ngProgressFactory, $window, $location) {
 
         var randomColor = function() {
             var letters = '0123456789ABCDEF';
