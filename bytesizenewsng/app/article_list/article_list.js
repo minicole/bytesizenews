@@ -67,8 +67,8 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
 
         var processArticles = function(response) {
             console.log(response);
-                var articlesParsed = response.data.articles;
-                $scope.hasNextPage = response.data.hasNextPage;
+                var articlesParsed = response.articles;
+                $scope.hasNextPage = response.hasNextPage;
                 var articles = [];
                 if (typeof articlesParsed === "object") {
                     for (var i = articlesParsed.length - 1; i >= 0; i--) {
@@ -106,7 +106,7 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
 
         $http.get(url, config)
             .then(function (response) {
-                processArticles(response);
+                processArticles(response.data);
             });
 
         $scope.goToArticle = function (articleid) {
@@ -147,8 +147,8 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
         $scope.performSearch= function() {
             var query = "http://bytesizenews.net:8080/search/";
             query += $scope.page_nb + "/";
-            var timeQuery = JSON.parse($scope.search_date);
-            if (timeQuery) {
+            if ($scope.search_date) {
+                var timeQuery = JSON.parse($scope.search_date);
                 query += timeQuery.hours + "/";
                 query += timeQuery.days + "/";
             } else {
