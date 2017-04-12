@@ -138,9 +138,9 @@ def get_articles_from_category(category="General",
 
         # Truncate based on page #
         try:
-            int(pageNumber)
-        except ValueError:
             pageNumber = int(pageNumber)
+        except ValueError:
+            pageNumber = 1
 
         del article_list[:(pageNumber-1)*NB_ARTICLES_PER_PAGE]
         del article_list[pageNumber*NB_ARTICLES_PER_PAGE:]
