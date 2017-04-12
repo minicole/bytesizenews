@@ -377,7 +377,7 @@ def similar_articles(article):
     return returnList
 
 
-def find_articles_by_keywords_and_time(searchCriteriaString, maxTimeDelta=timedelta(days=7), pageNumber =1):
+def find_articles_by_keywords_and_time(searchCriteriaString, maxHours=0, maxDays=7, pageNumber =1):
     """
     Return articles that match a search criteria and time
     :param searchCriteria: string of search criteria 
@@ -385,6 +385,7 @@ def find_articles_by_keywords_and_time(searchCriteriaString, maxTimeDelta=timede
     :return: list of articles
     """
 
+    maxTimeDelta = timedelta(days=maxDays, hours=maxHours)
     searchCriteria = searchCriteriaString.split(' ')
 
     replacePlusList = []
