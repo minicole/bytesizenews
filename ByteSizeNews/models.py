@@ -30,7 +30,7 @@ class Source(Document):
             source_name=self.source_name,
             language=self.language,
             country=self.country,
-            urlsToLogos=self.urlsToLogos[2] # Hard coded to medium? Or large For now
+            urlsToLogos=self.urlsToLogos[2]  # Hard coded to medium? Or large For now
         )
 
 

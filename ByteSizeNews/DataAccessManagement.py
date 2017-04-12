@@ -120,7 +120,6 @@ def get_articles_from_category(category="General",
             .order_by('-published_at')
 
         # Some exceptions for categories
-
         if category.lower() == "General".lower():
             categories = ["General", "general", "Recreation"]
         elif category == "All":
@@ -142,6 +141,11 @@ def get_articles_from_category(category="General",
         except ValueError:
             pageNumber = 1
 
+        hasNextPage = True
+        if len(article_list) - NB_ARTICLES_PER_PAGE*pageNumber <=0:
+            hasNextPage = False
+
+
         article_list = article_list[(pageNumber-1)*NB_ARTICLES_PER_PAGE:pageNumber*NB_ARTICLES_PER_PAGE]
 
         # re-sort on published date
@@ -151,7 +155,17 @@ def get_articles_from_category(category="General",
         if len(article_list):
             return_json_list = [article.as_small_json() for article in article_list]
             # log.info(return_json_list)
-            return json.dumps(return_json_list)
+
+            json_string_list = json.dumps(return_json_list)
+
+            return_json = json.loads(json_string_list.to_json())
+
+            return_json['has_next_page'] = hasNextPage
+
+            return json.dumps(return_json)
+
+
+            # return json.dumps(return_json_list)
 
 
 def update_sentiment_article(article):
