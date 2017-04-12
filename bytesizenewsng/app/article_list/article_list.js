@@ -175,8 +175,6 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
                 newUrl += page + "/";
                 if ($route.current.params.category) {
                     newUrl += $route.current.params.category.toLowerCase() + '/';
-                } else {
-                    newUrl += "all/"
                 }
                 $scope.progressbar.start();
                 $http({method: 'GET', url: newUrl}).success(function (data, status, headers, config) {
