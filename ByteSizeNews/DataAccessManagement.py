@@ -345,6 +345,8 @@ def similar_articles(article):
             newCandidateList.order_by('-published_date')
 
             for newArticle in newCandidateList:
+                if newArticle == article:
+                    continue
                 returnList.append(newArticle)
 
             # Truncate to 4
