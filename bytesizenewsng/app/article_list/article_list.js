@@ -145,7 +145,7 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
         });
 
         $scope.performSearch= function() {
-            var query = "http://bytesizenews.net:8080/";
+            var query = "http://bytesizenews.net:8080/search/";
             query += $scope.page_nb + "/";
             var timeQuery = JSON.parse($scope.search_date);
             if (timeQuery) {
