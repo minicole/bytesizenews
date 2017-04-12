@@ -84,31 +84,33 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
                     }
                 }
 
-                var articles = [];
-                articleParsed.similar_articles = JSON.parse(articleParsed.similar_articles);
-                if (typeof articleParsed.similar_articles === "object") {
-                    for (var i = articleParsed.similar_articles.length - 1; i >= 0; i--) {
-                        var article = articleParsed.similar_articles[i];
-                        if (article.url_to_image) {
-                            article.background = "background-image: url(" + article.url_to_image + ")";
-                        } else {
-                            article.background = "background-color: " + randomColor();
+                if (articleParsed.similar_articles !== undefined) {
+                    var articles = [];
+                    articleParsed.similar_articles = JSON.parse(articleParsed.similar_articles);
+                    if (typeof articleParsed.similar_articles === "object") {
+                        for (var i = articleParsed.similar_articles.length - 1; i >= 0; i--) {
+                            var article = articleParsed.similar_articles[i];
+                            if (article.url_to_image) {
+                                article.background = "background-image: url(" + article.url_to_image + ")";
+                            } else {
+                                article.background = "background-color: " + randomColor();
+                            }
+                            var d = new Date(article.published_at);
+                            article.hours = Math.floor((Date.now() - d.getTime()) / 1000 / 60 / 60);
+                            if (article.hours <= 0) {
+                                article.hours = "Just now";
+                            } else {
+                                article.hours = article.hours + " hours since posted";
+                            }
+                            if (article.description === undefined || article.description === "") {
+                                article.description = "no description";
+                            }
+                            articles.push(article);
                         }
-                        var d = new Date(article.published_at);
-                        article.hours = Math.floor((Date.now() - d.getTime()) / 1000 / 60 / 60);
-                        if (article.hours <= 0) {
-                            article.hours = "Just now";
-                        } else {
-                            article.hours = article.hours + " hours since posted";
-                        }
-                        if (article.description === undefined || article.description === "") {
-                            article.description = "no description";
-                        }
-                        articles.push(article);
                     }
-                }
 
-                articleParsed.similar_articles = articles;
+                    articleParsed.similar_articles = articles;
+                }
 
                 $scope.slider.value = Math.floor(articleParsed.sentiment * 100);
 
@@ -140,6 +142,16 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
                     .then(function (response) {
                         console.log(response);
                     });
+            }
+        };
+
+        $scope.goToArticle = function(articleid) {
+            var newUrl = $location.$$absUrl.substring(0, $location.$$absUrl.indexOf("/#!/")) + "/#!/article_page/" + articleid;
+            if ($scope.$$phase)
+                $window.location.href = newUrl;
+            else {
+                $location.path(newUrl);
+                $scope.$apply();
             }
         };
     }]);
