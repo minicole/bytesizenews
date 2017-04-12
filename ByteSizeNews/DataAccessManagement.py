@@ -376,12 +376,18 @@ def find_articles_by_keywords_and_time(searchCriteriaString, maxTimeDelta=timede
 
     searchCriteria = searchCriteriaString.split(' ')
 
+    replacePlusList = []
+    for criteria in searchCriteria:
+        replacePlusList.append(criteria.replace('+', ' '))
+
+    searchCriteria = replacePlusList
+
     time_threshold = datetime.utcnow() - maxTimeDelta
 
     candidateList = Article.objects.filter(published_at__gt=time_threshold)
 
     for criteria in searchCriteria:
-        candidateList = candidateList.filter(description__icontains=criteria)
+        candidateList = candidateList.filter(Q(description__icontains=criteria) | Q(title__icontains=criteria))
 
     log.info("Returns:{0} Articles for search string:{1}".format(len(candidateList), searchCriteriaString))
     if len(candidateList):
