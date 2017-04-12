@@ -85,6 +85,7 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
                 }
 
                 var articles = [];
+                articleParsed.similar_articles = JSON.parse(articleParsed.similar_articles);
                 if (typeof articleParsed.similar_articles === "object") {
                     for (var i = articleParsed.similar_articles.length - 1; i >= 0; i--) {
                         var article = articleParsed.similar_articles[i];
@@ -106,6 +107,8 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress','rzModule'])
                         articles.push(article);
                     }
                 }
+
+                articleParsed.similar_articles = articles;
 
                 $scope.slider.value = Math.floor(articleParsed.sentiment * 100);
 
