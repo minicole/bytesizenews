@@ -146,11 +146,12 @@ def get_articles_from_category(category="General",
         if len(article_list) - NB_ARTICLES_PER_PAGE*pageNumber <= 0:
             hasNextPage = False
 
+        # re-sort on published date
+        article_list.sort(key=lambda x: x.published_at, reverse=True)
 
         article_list = article_list[(pageNumber-1)*NB_ARTICLES_PER_PAGE:pageNumber*NB_ARTICLES_PER_PAGE]
 
-        # re-sort on published date
-        article_list.sort(key=lambda x: x.published_at, reverse=True)
+
 
         log.info("Returns:{0} Articles for categories:{1}".format(len(article_list), categories))
         if len(article_list):
