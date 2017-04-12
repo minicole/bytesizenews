@@ -33,6 +33,7 @@ def get_all_categories():
     #         "music", "politics", "science-and-nature", "sport", "technology"]
     return json.dumps({'categories': categorieslist})
 
+
 def get_all_languages():
     return Source.objects.distinct(field='language')
 
@@ -91,7 +92,6 @@ def get_article_by_id(article_id):
         return json.dumps("{'status':'Does not exist Error'}")
 
 
-
 def get_articles_from_category(category="General",
                                time_delta_ago=timedelta(days=TIME_THRESHOLD_CONSTANT_DAYS,
                                                         hours=TIME_THRESHOLD_CONSTANT_HOURS),
@@ -107,7 +107,7 @@ def get_articles_from_category(category="General",
     :param countries: Array of source countries to filter for
     :return: list of all articles to json
     """
-    log.info("Fetching articles for category{0}, from {1} ago".format(category, time_delta_ago))
+    log.info("Fetching articles for category{0}, from {1} ago for {2} page".format(category, time_delta_ago, pageNumber))
     time_threshold = datetime.utcnow() - time_delta_ago
 
     # Get all Articles with source in english
@@ -146,11 +146,12 @@ def get_articles_from_category(category="General",
         if len(article_list) - NB_ARTICLES_PER_PAGE*pageNumber <= 0:
             hasNextPage = False
 
+        # re-sort on published date
+        article_list.sort(key=lambda x: x.published_at, reverse=True)
 
         article_list = article_list[(pageNumber-1)*NB_ARTICLES_PER_PAGE:pageNumber*NB_ARTICLES_PER_PAGE]
 
-        # re-sort on published date
-        article_list.sort(key=lambda x: x.published_at, reverse=True)
+
 
         log.info("Returns:{0} Articles for categories:{1}".format(len(article_list), categories))
         if len(article_list):
