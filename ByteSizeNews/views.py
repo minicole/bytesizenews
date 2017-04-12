@@ -42,7 +42,7 @@ def get_articles_from_category(request, category, page):
 
 
 @csrf_exempt
-def get_articles_from_search(request, query, hours, days, page):
+def get_articles_from_search(request, page, hours, days, query):
     articles = DataAccessManagement.find_articles_by_keywords_and_time(query, hours, days, page)
     resp = HttpResponse(articles)
     resp.setdefault("Access-Control-Allow-Origin", "*")
