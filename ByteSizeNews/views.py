@@ -16,11 +16,11 @@ log = logging.getLogger('django')
 
 
 @csrf_exempt
-def get_all_articles(request):
+def get_all_articles(request, page):
     """
     Gets all the articles for all categories
     """
-    articles = DataAccessManagement.get_articles()
+    articles = DataAccessManagement.get_articles(page)
 
     resp = HttpResponse(articles)
     resp.setdefault("Access-Control-Allow-Origin", "*")
@@ -31,8 +31,8 @@ def get_all_articles(request):
 
 
 @csrf_exempt
-def get_articles_from_category(request, category):
-    articles = DataAccessManagement.get_articles_from_category(category)
+def get_articles_from_category(request, category, page):
+    articles = DataAccessManagement.get_articles_from_category(category, pageNumber=page)
     resp = HttpResponse(articles)
     resp.setdefault("Access-Control-Allow-Origin", "*")
     resp.setdefault('Access-Control-Allow-Methods', 'GET, POST')

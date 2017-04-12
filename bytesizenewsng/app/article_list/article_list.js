@@ -3,34 +3,41 @@
 angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
 
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/article_list/:category?', {
+        $routeProvider.when('/article_list/:category?/:page_nb?/', {
             templateUrl: 'article_list/article_list.html',
             controller: 'article_listCtrl'
-        });
+        })
     }])
     .controller('article_listCtrl', ['$scope', '$http', '$route', '$window', '$location', 'ngProgressFactory', function ($scope, $http, $route, $window, $location, ngProgressFactory) {
         $scope.progressbar = ngProgressFactory.createInstance();
         $scope.progressbar.setHeight("5px");
         $scope.progressbar.setColor("#f04641");
         $scope.progressbar.start();
-        var randomColor = function() {
+        var randomColor = function () {
             var letters = '0123456789ABCDEF';
             var color = '#';
-            for (var i = 0; i < 6; i++ ) {
+            for (var i = 0; i < 6; i++) {
                 color += letters[Math.floor(Math.random() * 16)];
             }
             return color;
         };
 
-        var config = {headers:  {} };
+        var config = {headers: {}};
         var url = 'http://bytesizenews.net:8080/articles/';
 
-        if ($route.current.params.category) {
+        if ($route.current.params.page_nb) {
+            url += $route.current.params.page_nb + '/';
+            $scope.page_nb = $route.current.params.page_nb;
+        } else {
+            url += 1 + '/';
+            $scope.page_nb = 1;
+        }
+        if ($route.current.params.category && $route.current.params.category !== "all") {
             url += $route.current.params.category.toLowerCase() + '/';
         }
 
-        $http.get(url,config)
-            .then(function(response) {
+        $http.get(url, config)
+            .then(function (response) {
                 console.log(response);
                 var articlesParsed = response.data;
                 var articles = [];
@@ -59,7 +66,7 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
                 $scope.articles = articles;
             });
 
-        $scope.goToArticle = function(articleid) {
+        $scope.goToArticle = function (articleid) {
             var newUrl = $location.$$absUrl.substring(0, $location.$$absUrl.indexOf("/#!/")) + "/#!/article_page/" + articleid;
             if ($scope.$$phase)
                 $window.location.href = newUrl;
@@ -69,8 +76,28 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
             }
         };
 
-        $scope.$on("$destroy", function() {
+        $scope.showPrev = function() {
+            return parseInt($scope.page_nb) > 1;
+        }
+
+        $scope.goToNextPrevPage = function (pageDirection) {
+            var page = parseInt($scope.page_nb) + pageDirection;
+            var newUrl = $location.$$absUrl.substring(0, $location.$$absUrl.indexOf("/#!/")) + "/#!/article_list/";
+            if ($route.current.params.category) {
+                newUrl += $route.current.params.category.toLowerCase() + '/';
+            }
+            newUrl += page + "/";
+            if ($scope.$$phase)
+                $window.location.href = newUrl;
+            else {
+                $location.path(newUrl);
+                $scope.$apply();
+            }
+        };
+
+        $scope.$on("$destroy", function () {
             $scope.progressbar.complete();
         });
     }]);
+
 

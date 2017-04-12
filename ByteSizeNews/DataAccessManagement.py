@@ -18,8 +18,8 @@ NB_ARTICLES_PER_PAGE = 99
 UPDATE_SUMMARY_RATIO_THRESHOLD = 2.9
 
 
-def get_articles():
-    return get_articles_from_category("All")
+def get_articles(page):
+    return get_articles_from_category("All", pageNumber=page)
 
 
 def get_all_categories():
