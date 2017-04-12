@@ -315,7 +315,7 @@ def similar_articles(article):
     returnList = []
     similar_list_max = 4
     for articleTuple in similarityScoreTupleList:
-        if articleTuple[0] == article:
+        if articleTuple[0].id == article.id:
             continue
         returnList.append(articleTuple[0])
 
@@ -345,7 +345,7 @@ def similar_articles(article):
             newCandidateList.order_by('-published_date')
 
             for newArticle in newCandidateList:
-                if newArticle == article:
+                if newArticle.id == article.id:
                     continue
                 returnList.append(newArticle)
 
