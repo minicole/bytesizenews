@@ -1,3 +1,11 @@
+<div class="search-bar">
+    <label>Search: </label>
+    <input type="text" my-on-key-down-call="performSearch()" ng-model="search_query">
+    <select ng-model="search_date">
+        <option ng-repeat="x in timeOptions" value="{{x}}">{{x.key}}</option>
+    </select>
+    <button class="btn btn-default" ng-click="performSearch()">Search</button>
+</div>
 <div class="col-md-4 article-background-square" ng-repeat="article in articles" style="{{ article.background }}" ng-click="goToArticle(article.id)">
     <h2 class="see-over-image" tooltips tooltip-template="{{ article.description }}" tooltip-side="down">{{ article.title }}</h2>
     <h4 class="see-over-image author">{{ article.author }}</h4>
@@ -11,6 +19,6 @@
     </div>
     <div class="col-md-4"></div>
     <div class="col-md-1">
-        <button class="btn btn-success" ng-click="goToNextPrevPage(1)">Next Page</button>
+        <button class="btn btn-success" ng-show="hasNextPage" ng-click="goToNextPrevPage(1)">Next Page</button>
     </div>
 </div>
