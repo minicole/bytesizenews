@@ -30,7 +30,26 @@
     <link rel="stylesheet" href="app.css">
 
     <script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=58ed804362683e0012c46166&product=sticky-share-buttons"></script>
+<style>
+input[type=text] {
+    width: 130px;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: white;
+    background-image: url('static/search-icon.png');
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+    padding: 12px 20px 12px 40px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+}
 
+input[type=text]:focus {
+    width: 100%;
+}
+</style>
 </head>
 <body>
 <div class="bs-docs-header" id="content" tabindex="-1">
