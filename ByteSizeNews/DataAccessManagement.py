@@ -90,7 +90,7 @@ def get_article_by_id(article_id):
         return json.dumps("{'status':'Does not exist Error'}")
 
 
-# TODO: Replace category with a list
+
 def get_articles_from_category(category="General",
                                time_delta_ago=timedelta(days=TIME_THRESHOLD_CONSTANT_DAYS,
                                                         hours=TIME_THRESHOLD_CONSTANT_HOURS),
@@ -364,6 +364,36 @@ def similar_articles(article):
             del returnList[4:]
 
     return returnList
+
+
+def find_articles_by_keywords_and_time(searchCriteriaString, maxTimeDelta=timedelta(days=7)):
+    """
+    Return articles that match a search criteria and time
+    :param searchCriteria: string of search criteria 
+    :param maxTimeDelta: max relative time to look back until present
+    :return: list of articles
+    """
+
+    searchCriteria = searchCriteriaString.split(' ')
+
+    time_threshold = datetime.utcnow() - maxTimeDelta
+
+    candidateList = Article.objects.filter(published_at__gt=time_threshold)
+
+    for criteria in searchCriteria:
+        candidateList = candidateList.filter(description__icontains=criteria)
+
+    log.info("Returns:{0} Articles for search string:{1}".format(len(candidateList), searchCriteriaString))
+    if len(candidateList):
+        return_json_list = [article.as_small_json() for article in candidateList]
+        # log.info(return_json_list)
+        return json.dumps(return_json_list)
+    else:
+        return json.dumps("{'status':'No articles match the search string'}")
+
+
+
+
 
 
 
