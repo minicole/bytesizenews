@@ -10,6 +10,10 @@ from django.core import serializers
 
 import json
 
+import logging
+
+log = logging.getLogger('django')
+
 
 @csrf_exempt
 def get_all_articles(request):
@@ -44,6 +48,8 @@ def get_article(request, articleID):
     resp.setdefault("Access-Control-Allow-Origin", "*")
     resp.setdefault('Access-Control-Allow-Methods', 'GET, POST')
     resp.setdefault("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token")
+
+    log.debug(resp)
 
     return resp
 

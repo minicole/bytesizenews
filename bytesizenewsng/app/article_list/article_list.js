@@ -67,6 +67,6 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
                 $location.path(newUrl);
                 $scope.$apply();
             }
-        }
+        };
     }]);
 
