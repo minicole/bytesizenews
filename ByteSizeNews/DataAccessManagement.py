@@ -142,8 +142,15 @@ def get_articles_from_category(category="General",
         except ValueError:
             pageNumber = 1
 
-        del article_list[:(pageNumber-1)*NB_ARTICLES_PER_PAGE]
-        del article_list[pageNumber*NB_ARTICLES_PER_PAGE:]
+        temp_article_list_lower = [a for a in article_list]
+        del temp_article_list_lower[:(pageNumber-1)*NB_ARTICLES_PER_PAGE]
+        temp_article_list_upper = [a for a in article_list]
+        del temp_article_list_upper[pageNumber*NB_ARTICLES_PER_PAGE]
+
+        article_list = list(set(temp_article_list_lower).intersection(temp_article_list_upper))
+
+        # re-sort on published date
+        article_list.sort(key=lambda x: x.published_at, reverse=True)
 
         log.info("Returns:{0} Articles for categories:{1}".format(len(article_list), categories))
         if len(article_list):
