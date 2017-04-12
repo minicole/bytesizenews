@@ -3,6 +3,7 @@ from ByteSizeNews.SummarizeService import *
 from ByteSizeNews.SentimentAnalysisService import *
 from datetime import datetime, timedelta
 from mongoengine.queryset.visitor import Q
+from urllib import parse
 import logging
 import json
 
@@ -384,11 +385,11 @@ def find_articles_by_keywords_and_time(searchCriteriaString, maxHours=0, maxDays
     :param maxTimeDelta: max relative time to look back until present
     :return: list of articles
     """
-
     try:
         maxDays = int(maxDays)
         maxHours = int(maxHours)
         pageNumber = int(pageNumber)
+        searchCriteriaString = parse.unquote(searchCriteriaString)
     except:
         maxDays = 7
         maxHours = 0
