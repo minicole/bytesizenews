@@ -28,7 +28,7 @@ CURRENT_SOURCE_BLACKLIST_BY_SOURCE_ID = ['associated-press', 'breitbart-news', '
                                          'mashable', 'metro', 'mirror', 'the-lad-bible', 'the-sport-bible',
                                          'the-times-of-india']
 
-CHAR_COUNT_THRESHOLD = 400
+CHAR_COUNT_THRESHOLD = 1000
 
 def fetch_and_save_latest_news():
     """
