@@ -12,7 +12,7 @@
     <h3 class="see-over-image">{{ article.source.source_name }}</h3>
     <h4 class="see-over-image bottom-right">{{ article.hours }}</h4>
 </div>
-<div class="row" ng-show="loaded">
+<div class="row" ng-show="loaded && has_articles">
     <div class="col-md-3"></div>
     <div class="col-md-1">
         <button class="btn btn-default " ng-show="showPrev()" ng-click="goToNextPrevPage(-1)">Previous Page</button>
@@ -22,3 +22,4 @@
         <button class="btn btn-success" ng-show="hasNextPage" ng-click="goToNextPrevPage(1)">Next Page</button>
     </div>
 </div>
+<div ng-show="!has_articles && loaded" class="frown">:(</div>
