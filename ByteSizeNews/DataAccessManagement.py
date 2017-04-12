@@ -147,7 +147,7 @@ def get_articles_from_category(category="General",
         temp_article_list_upper = [a for a in article_list]
         del temp_article_list_upper[pageNumber*NB_ARTICLES_PER_PAGE]
 
-        article_list = list(set(temp_article_list_lower).intersect(temp_article_list_upper))
+        article_list = list(set(temp_article_list_lower).intersection(temp_article_list_upper))
 
         # re-sort on published date
         article_list.sort(key=lambda x: x.published_at, reverse=True)
