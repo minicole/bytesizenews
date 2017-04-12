@@ -145,21 +145,22 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
         });
 
         $scope.performSearch= function() {
-            var query = "http://bytesizenews.net:8080/search/";
-            query += $scope.page_nb + "/";
-            if ($scope.search_date) {
-                var timeQuery = JSON.parse($scope.search_date);
-                query += timeQuery.hours + "/";
-                query += timeQuery.days + "/";
-            } else {
-                query += 0 + "/";
-                query += 0 + "/";
+            if ($scope.search_form.query.$valid && $scope.search_form.date.$valid) {
+                var query = "http://bytesizenews.net:8080/search/";
+                query += $scope.page_nb + "/";
+                if ($scope.search_date) {
+                    var timeQuery = JSON.parse($scope.search_date);
+                    query += timeQuery.hours + "/";
+                    query += timeQuery.days + "/";
+                } else {
+                    query += 0 + "/";
+                    query += 0 + "/";
+                }
+                query += encodeURI($scope.search_query) + "/";
+                $http({method: 'GET', url: query}).success(function (data, status, headers, config) {
+                    processArticles(data);
+                });
             }
-            query += encodeURI($scope.search_query) + "/";
-          $http({method: 'GET', url: query}).
-            success(function(data, status, headers, config) {
-                processArticles(data);
-            })
         }
     }]).directive('myOnKeyDownCall', function () {
     return function (scope, element, attrs) {

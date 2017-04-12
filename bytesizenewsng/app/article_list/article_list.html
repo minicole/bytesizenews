@@ -1,11 +1,11 @@
-<div class="search-bar">
+<form class="search-bar" name="search_form">
     <label>Search: </label>
-    <input type="text" my-on-key-down-call="performSearch()" ng-model="search_query">
-    <select ng-model="search_date">
+    <input name="query" type="text" my-on-key-down-call="performSearch()" ng-model="search_query" required>
+    <select name= "date" ng-model="search_date" required>
         <option ng-repeat="x in timeOptions" value="{{x}}">{{x.key}}</option>
     </select>
     <button class="btn btn-default" ng-click="performSearch()">Search</button>
-</div>
+</form>
 <div class="col-md-4 article-background-square" ng-repeat="article in articles" style="{{ article.background }}" ng-click="goToArticle(article.id)">
     <h2 class="see-over-image" tooltips tooltip-template="{{ article.description }}" tooltip-side="down">{{ article.title }}</h2>
     <h4 class="see-over-image author">{{ article.author }}</h4>

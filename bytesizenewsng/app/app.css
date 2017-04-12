@@ -142,3 +142,7 @@ footer {
 .rz-bubble::after {
     content: "%";
 }
+
+.search-bar input.ng-invalid.ng-touched, select.ng-invalid.ng-touched {
+    border: red solid 3px;
+}
