@@ -324,12 +324,14 @@ def similar_articles(article):
 
     # if keywords wasn't enough fill rest with similar ones based on article keywords all found in description
     if len(returnList) < 4:
-        newCandidateList = []
+        newCandidateList = Article.objects.\
+            filter(published_at__gt=minTime).\
+            filter(published_at__lt=maxTime)
 
         for keyword in article.keywords:
-            # initialize on first pass
-            if len(initial_candidateList) == 0:
-                newCandidateList = initial_candidateList
+            # # initialize on first pass
+            # if len(initial_candidateList) == 0:
+            #     newCandidateList = initial_candidateList
 
             templist = newCandidateList
             newCandidateList = newCandidateList.filter(description__icontains=keyword)
