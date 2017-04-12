@@ -13,6 +13,9 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
         $scope.progressbar.setHeight("5px");
         $scope.progressbar.setColor("#f04641");
         $scope.progressbar.start();
+
+        var searching = false;
+
         var randomColor = function () {
             var letters = '0123456789ABCDEF';
             var color = '#';
@@ -23,6 +26,7 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
         };
 
         var config = {headers: {}};
+
         var url = 'http://bytesizenews.net:8080/articles/';
 
         if ($route.current.params.page_nb) {
@@ -44,8 +48,8 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
                 "days": 0
             },
             {
-                "key": "last 5 hours",
-                "hours": 5,
+                "key": "last 6 hours",
+                "hours": 6,
                 "days": 0
             },
             {
@@ -62,49 +66,64 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
                 "key": "last 3 days",
                 "hours": 0,
                 "days": 3
+            },
+            {
+                "key": "last 7 days",
+                "hours": 0,
+                "days": 7
+            },
+            {
+                "key": "last 30 days",
+                "hours": 0,
+                "days": 30
+            },
+            {
+                "key": "last year",
+                "hours": 0,
+                "days": 365
             }
         ];
 
-        var processArticles = function(response) {
+        var processArticles = function (response) {
             console.log(response);
-                var articlesParsed = response.articles;
-                $scope.hasNextPage = response.hasNextPage;
-                var articles = [];
-                if (typeof articlesParsed === "object") {
-                    $scope.hasArticles = true;
-                    for (var i = articlesParsed.length - 1; i >= 0; i--) {
-                        var article = articlesParsed[i];
-                        if (article.url_to_image) {
-                            article.background = "background-image: url(" + article.url_to_image + ")";
-                        } else {
-                            article.background = "background-color: " + randomColor();
-                        }
-                        var d = new Date(article.published_at);
-                        var now = new Date().getTime();
-                        article.timeSince = now - d.getTime();
-                        article.hours = Math.floor(article.timeSince / 1000 / 60 / 60);
-                        if (article.hours <= 0) {
-                            article.hours = "Just now";
-                        } else {
-                            article.hours = article.hours + " hours since posted";
-                        }
-                        if (article.description === undefined || article.description === "") {
-                            article.description = "no description";
-                        }
-                        articles.push(article);
+            var articlesParsed = response.articles;
+            $scope.hasNextPage = response.hasNextPage;
+            var articles = [];
+            if (typeof articlesParsed === "object") {
+                $scope.hasArticles = true;
+                for (var i = articlesParsed.length - 1; i >= 0; i--) {
+                    var article = articlesParsed[i];
+                    if (article.url_to_image) {
+                        article.background = "background-image: url(" + article.url_to_image + ")";
+                    } else {
+                        article.background = "background-color: " + randomColor();
                     }
-
-                    var articlesSorted = articles.sort(function(item1, item2) {
-                        if (item1.timeSince < item2.timeSince) return -1;
-                        if (item1.timeSince > item2.timeSince) return 1;
-                        return 0;
-                    });
-                } else {
-                    $scope.hasArticles = false;
+                    var d = new Date(article.published_at);
+                    var now = new Date().getTime();
+                    article.timeSince = now - d.getTime();
+                    article.hours = Math.floor(article.timeSince / 1000 / 60 / 60);
+                    if (article.hours <= 0) {
+                        article.hours = "Just now";
+                    } else {
+                        article.hours = article.hours + " hours since posted";
+                    }
+                    if (article.description === undefined || article.description === "") {
+                        article.description = "no description";
+                    }
+                    articles.push(article);
                 }
-                $scope.loaded = true;
-                $scope.progressbar.complete();
-                $scope.articles = articlesSorted;
+
+                var articlesSorted = articles.sort(function (item1, item2) {
+                    if (item1.timeSince < item2.timeSince) return -1;
+                    if (item1.timeSince > item2.timeSince) return 1;
+                    return 0;
+                });
+            } else {
+                $scope.hasArticles = false;
+            }
+            $scope.loaded = true;
+            $scope.progressbar.complete();
+            $scope.articles = articlesSorted;
         };
 
         $http.get(url, config)
@@ -122,24 +141,48 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
             }
         };
 
-        $scope.showPrev = function() {
+        $scope.showPrev = function () {
             return parseInt($scope.page_nb) > 1;
         };
 
         $scope.goToNextPrevPage = function (pageDirection) {
             var page = parseInt($scope.page_nb) + pageDirection;
-            var newUrl = $location.$$absUrl.substring(0, $location.$$absUrl.indexOf("/#!/")) + "/#!/article_list/";
-            if ($route.current.params.category) {
-                newUrl += $route.current.params.category.toLowerCase() + '/';
+            $scope.page_nb = page;
+
+            var newUrl = "";
+
+            if (searching) {
+                var newUrl = "http://bytesizenews.net:8080/search/";
+                // var newUrl = $location.$$absUrl.substring(0, $location.$$absUrl.indexOf("/#!/")) + ":8080/search/";
+                newUrl += $scope.page_nb + "/";
+                if ($scope.search_date) {
+                    var timeQuery = JSON.parse($scope.search_date);
+                    newUrl += timeQuery.hours + "/";
+                    newUrl += timeQuery.days + "/";
+                } else {
+                    newUrl += 0 + "/";
+                    newUrl += 0 + "/";
+                }
+                newUrl += encodeURI($scope.search_query) + "/";
+                $scope.progressbar.start();
+                $http({method: 'GET', url: newUrl}).success(function (data, status, headers, config) {
+                    processArticles(data);
+                    $window.scrollTo(0, 0);
+                });
             } else {
-                newUrl += "all/"
-            }
-            newUrl += page + "/";
-            if ($scope.$$phase)
-                $window.location.href = newUrl;
-            else {
-                $location.path(newUrl);
-                $scope.$apply();
+                // newUrl = $location.$$absUrl.substring(0, $location.$$absUrl.indexOf("/#!/")) + ":8080/articles/";
+                newUrl = "http://bytesizenews.net:8080/articles/";
+                newUrl += page + "/";
+                if ($route.current.params.category) {
+                    newUrl += $route.current.params.category.toLowerCase() + '/';
+                } else {
+                    newUrl += "all/"
+                }
+                $scope.progressbar.start();
+                $http({method: 'GET', url: newUrl}).success(function (data, status, headers, config) {
+                    processArticles(data);
+                    $window.scrollTo(0, 0);
+                });
             }
         };
 
@@ -147,7 +190,7 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
             $scope.progressbar.complete();
         });
 
-        $scope.performSearch= function() {
+        $scope.performSearch = function () {
             if ($scope.search_form.query.$valid && $scope.search_form.date.$valid) {
                 var query = "http://bytesizenews.net:8080/search/";
                 query += $scope.page_nb + "/";
@@ -159,6 +202,7 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
                     query += 0 + "/";
                     query += 0 + "/";
                 }
+                searching = true;
                 query += encodeURI($scope.search_query) + "/";
                 $http({method: 'GET', url: query}).success(function (data, status, headers, config) {
                     processArticles(data);

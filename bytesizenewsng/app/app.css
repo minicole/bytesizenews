@@ -143,7 +143,7 @@ footer {
     content: "%";
 }
 
-.search-bar input.ng-invalid.ng-touched, select.ng-invalid.ng-touched {
+.search-bar input.ng-invalid.ng-dirty, select.ng-invalid.ng-dirty {
     border: red solid 3px;
 }
 
