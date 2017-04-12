@@ -142,7 +142,7 @@ def get_articles_from_category(category="General",
             pageNumber = 1
 
         hasNextPage = True
-        if len(article_list) - NB_ARTICLES_PER_PAGE*pageNumber <=0:
+        if len(article_list) - NB_ARTICLES_PER_PAGE*pageNumber <= 0:
             hasNextPage = False
 
 
@@ -377,7 +377,7 @@ def similar_articles(article):
     return returnList
 
 
-def find_articles_by_keywords_and_time(searchCriteriaString, maxTimeDelta=timedelta(days=7)):
+def find_articles_by_keywords_and_time(searchCriteriaString, maxTimeDelta=timedelta(days=7), pageNumber =1):
     """
     Return articles that match a search criteria and time
     :param searchCriteria: string of search criteria 
@@ -401,10 +401,23 @@ def find_articles_by_keywords_and_time(searchCriteriaString, maxTimeDelta=timede
         candidateList = candidateList.filter(Q(description__icontains=criteria) | Q(title__icontains=criteria))
 
     log.info("Returns:{0} Articles for search string:{1}".format(len(candidateList), searchCriteriaString))
+
+    hasNextPage = True
+    if len(candidateList) - NB_ARTICLES_PER_PAGE * pageNumber <= 0:
+        hasNextPage = False
+
+    candidateList = candidateList[(pageNumber - 1) * NB_ARTICLES_PER_PAGE:pageNumber * NB_ARTICLES_PER_PAGE]
+
+
+
     if len(candidateList):
         return_json_list = [article.as_small_json() for article in candidateList]
         # log.info(return_json_list)
-        return json.dumps(return_json_list)
+
+        return_json = {"articles": return_json_list,
+                       "hasNextPage": hasNextPage}
+
+        return json.dumps(return_json)
     else:
         return json.dumps("{'status':'No articles match the search string'}")
 
