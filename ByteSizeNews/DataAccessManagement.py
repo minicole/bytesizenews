@@ -13,6 +13,10 @@ TIME_THRESHOLD_CONSTANT_HOURS = 0
 
 DEFAULT_LANGUAGES_LIST = ["en"]
 
+NB_ARTICLES_PER_PAGE = 99
+
+UPDATE_SUMMARY_RATIO_THRESHOLD = 2.9
+
 
 def get_articles():
     return get_articles_from_category("All")
@@ -133,8 +137,8 @@ def get_articles_from_category(category="General",
         article_list = list(setArticles)
 
         # Truncate based on page #
-        del article_list[:(pageNumber-1)*100]
-        del article_list[pageNumber*100:]
+        del article_list[:(pageNumber-1)*NB_ARTICLES_PER_PAGE]
+        del article_list[pageNumber*NB_ARTICLES_PER_PAGE:]
 
         log.info("Returns:{0} Articles for categories:{1}".format(len(article_list), categories))
         if len(article_list):
@@ -277,7 +281,7 @@ def needs_to_be_resummarized(article):
     if rating.nb_thumbs_up == 0:
         rating_thumbs_up = 1
 
-    if rating.nb_thumbs_down/rating_thumbs_up > 3.0:
+    if rating.nb_thumbs_down/rating_thumbs_up > UPDATE_SUMMARY_RATIO_THRESHOLD:
         return True
     else:
         return False
