@@ -385,6 +385,15 @@ def find_articles_by_keywords_and_time(searchCriteriaString, maxHours=0, maxDays
     :return: list of articles
     """
 
+    try:
+        maxDays = int(maxDays)
+        maxHours = int(maxHours)
+        pageNumber = int(pageNumber)
+    except:
+        maxDays = 7
+        maxHours = 0
+        pageNumber = 1
+
     maxTimeDelta = timedelta(days=maxDays, hours=maxHours)
     searchCriteria = searchCriteriaString.split(' ')
 
