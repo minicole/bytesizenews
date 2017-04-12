@@ -71,6 +71,7 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
                 $scope.hasNextPage = response.hasNextPage;
                 var articles = [];
                 if (typeof articlesParsed === "object") {
+                    $scope.hasArticles = true;
                     for (var i = articlesParsed.length - 1; i >= 0; i--) {
                         var article = articlesParsed[i];
                         if (article.url_to_image) {
@@ -98,6 +99,8 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
                         if (item1.timeSince > item2.timeSince) return 1;
                         return 0;
                     });
+                } else {
+                    $scope.hasArticles = false;
                 }
                 $scope.loaded = true;
                 $scope.progressbar.complete();

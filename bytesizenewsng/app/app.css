@@ -146,3 +146,8 @@ footer {
 .search-bar input.ng-invalid.ng-touched, select.ng-invalid.ng-touched {
     border: red solid 3px;
 }
+
+.frown {
+    font-size: 100px;
+    color: #f14742;
+}
