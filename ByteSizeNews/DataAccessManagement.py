@@ -85,6 +85,10 @@ def get_article_by_id(article_id):
             return_json = json.loads(article.to_json())
 
             return_json['similar_articles'] = similarjson
+        else:
+            return_json = json.loads(article.to_json())
+
+            return_json['similar_articles'] = []
 
         return json.dumps(return_json)
 
