@@ -424,7 +424,7 @@ def find_articles_by_keywords_and_time(searchCriteriaString, maxHours=0, maxDays
         hasNextPage = False
 
     # re-sort on published date
-    candidateList.order_by('-published_at')
+    candidateList = candidateList.order_by('-published_at')
 
     candidateList = candidateList[(pageNumber - 1) * NB_ARTICLES_PER_PAGE:pageNumber * NB_ARTICLES_PER_PAGE]
 
