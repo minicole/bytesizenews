@@ -1,6 +1,6 @@
 <form class="search-bar" name="search_form">
     <!--<label>Search: </label>-->
-    <input name="search" type="text" my-on-key-down-call="performSearch()" ng-model="search_query" required placeholder="Search...">
+    <input name="query" type="text" my-on-key-down-call="performSearch()" ng-model="search_query" required placeholder="Search...">
     <select name= "date" ng-model="search_date" required placeholder="Time Frame">
         <option value="">- Please Choose -</option>
         <option ng-repeat="x in timeOptions" value="{{x}}">{{x.key}}</option>
