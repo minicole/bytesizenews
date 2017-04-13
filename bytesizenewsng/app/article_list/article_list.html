@@ -1,15 +1,14 @@
 <form class="search-bar" name="search_form">
     <!--<label>Search: </label>-->
     <input name="query" type="text" my-on-key-down-call="performSearch()" ng-model="search_query" required placeholder="Search...">
-    <select name= "date" ng-model="search_date" required placeholder="Time Frame">
-        <option value="">- Please Choose -</option>
-        <option ng-repeat="x in timeOptions" value="{{x}}">{{x.key}}</option>
-    </select>
+    <bs-dropdown name="date" data-menu-type="button" select-val="selectedTime = selectedVal"
+        preselected-item="selectedTime" data-dropdown-data="timeOptions"></bs-dropdown>
     <button class="mikeButton" ng-click="performSearch()">Search</button>
-
 </form>
-<div class="col-md-4 article-background-square" ng-repeat="article in articles" style="{{ article.background }}" ng-click="goToArticle(article.id)">
-    <h2 class="see-over-image" tooltips tooltip-template="{{ article.description }}" tooltip-side="down">{{ article.title }}</h2>
+<div class="col-md-4 article-background-square" ng-repeat="article in articles" style="{{ article.background }}"
+     ng-click="goToArticle(article.id)">
+    <h2 class="see-over-image" tooltips tooltip-template="{{ article.description }}"
+        tooltip-side="down">{{ article.title }}</h2>
     <h4 class="see-over-image author">{{ article.author }}</h4>
     <h3 class="see-over-image">{{ article.source.source_name }}</h3>
     <h4 class="see-over-image bottom-right">{{ article.hours }}</h4>
