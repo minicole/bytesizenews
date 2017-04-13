@@ -5,7 +5,7 @@
         <option value="">- Please Choose -</option>
         <option ng-repeat="x in timeOptions" value="{{x}}">{{x.key}}</option>
     </select>
-    <button class="btn btn-default" ng-click="performSearch()">Search</button>
+    <button class="mikeButton" ng-click="performSearch()">Search</button>
 
 </form>
 <div class="col-md-4 article-background-square" ng-repeat="article in articles" style="{{ article.background }}" ng-click="goToArticle(article.id)">
@@ -17,11 +17,11 @@
 <div class="row" ng-show="loaded && hasArticles">
     <div class="col-md-3"></div>
     <div class="col-md-1">
-        <button class="btn btn-default " ng-show="showPrev()" ng-click="goToNextPrevPage(-1)">Previous Page</button>
+        <button class="mikeButton " ng-show="showPrev()" ng-click="goToNextPrevPage(-1)">< Back</button>
     </div>
     <div class="col-md-4"></div>
     <div class="col-md-1">
-        <button class="pagination" ng-show="hasNextPage" ng-click="goToNextPrevPage(1)">Next ></button>
+        <button class="mikeButton" ng-show="hasNextPage" ng-click="goToNextPrevPage(1)">Next ></button>
     </div>
 </div>
 <div ng-show="!hasArticles && loaded" class="frown">:(</div>
