@@ -377,6 +377,7 @@ def similar_articles(article):
                     continue
                 returnList.append(newArticle)
 
+
             # Truncate to 4
             del returnList[4:]
 
@@ -421,6 +422,9 @@ def find_articles_by_keywords_and_time(searchCriteriaString, maxHours=0, maxDays
     hasNextPage = True
     if len(candidateList) - NB_ARTICLES_PER_PAGE * pageNumber <= 0:
         hasNextPage = False
+
+    # re-sort on published date
+    candidateList.sort(key=lambda x: x.published_at, reverse=True)
 
     candidateList = candidateList[(pageNumber - 1) * NB_ARTICLES_PER_PAGE:pageNumber * NB_ARTICLES_PER_PAGE]
 
