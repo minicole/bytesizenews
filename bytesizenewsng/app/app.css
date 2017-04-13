@@ -220,3 +220,21 @@ input[type=text]:focus {
     color: white;
     background: #484848;
 }
+
+.rzslider .rz-pointer {
+    top: -14px;
+    z-index: 3;
+    width: 10px;
+    height: 32px;
+    cursor: pointer;
+    background-color: #0db9f0;
+    border-radius: 10px;
+}
+
+.rzslider .rz-pointer::after {
+    background: rgba(0,0,0,0);
+}
+
+.rzslider {
+    margin-top: 7px;
+}
