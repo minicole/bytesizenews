@@ -170,3 +170,71 @@ section.flat button.active {
   background-color: #27496d;
   text-shadow: -1px 1px #193047;
 }
+
+input[type=text] {
+    width: 130px;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: white;
+    background-image: url('static/search-icon.png');
+    background-position: 6px 8px;
+    background-repeat: no-repeat;
+    padding: 12px 2px 12px 40px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+}
+
+input[type=text]:focus {
+    width: 50%;
+}
+
+.mikeButton{
+    color: white;
+    background-color: #202020;
+    padding: 8px 2px;
+    text-decoration: none;
+    border: 1px solid #ddd;
+    width: 65px
+}
+
+.nicole-copy-mike-button {
+    color: white;
+    background-color: #202020;
+    border: 1px solid #ddd;
+    padding: 8px 6px;
+    margin-bottom: 2px;
+    border-radius: 0px;
+}
+
+.nicole-copy-mike-button:hover {
+    color: white;
+}
+
+.nicole-copy-mike-button.dropdown-menu>li>a {
+    color: white;
+}
+
+.nicole-copy-mike-button.dropdown-menu>li>a:hover {
+    color: white;
+    background: #484848;
+}
+
+.rzslider .rz-pointer {
+    top: -14px;
+    z-index: 3;
+    width: 10px;
+    height: 32px;
+    cursor: pointer;
+    background-color: #0db9f0;
+    border-radius: 10px;
+}
+
+.rzslider .rz-pointer::after {
+    background: rgba(0,0,0,0);
+}
+
+.rzslider {
+    margin-top: 7px;
+}

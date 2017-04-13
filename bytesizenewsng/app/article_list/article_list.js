@@ -83,6 +83,7 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
                 "days": 365
             }
         ];
+        $scope.selectedTime = $scope.timeOptions[5].key;
 
         var processArticles = function (response) {
             console.log(response);
@@ -155,10 +156,9 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
                 var newUrl = "http://bytesizenews.net:8080/search/";
                 // var newUrl = $location.$$absUrl.substring(0, $location.$$absUrl.indexOf("/#!/")) + ":8080/search/";
                 newUrl += $scope.page_nb + "/";
-                if ($scope.search_date) {
-                    var timeQuery = JSON.parse($scope.search_date);
-                    newUrl += timeQuery.hours + "/";
-                    newUrl += timeQuery.days + "/";
+                if ($scope.selectedTime) {
+                    newUrl += $scope.selectedTime.hours + "/";
+                    newUrl += $scope.selectedTime.days + "/";
                 } else {
                     newUrl += 0 + "/";
                     newUrl += 0 + "/";
@@ -189,13 +189,12 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
         });
 
         $scope.performSearch = function () {
-            if ($scope.search_form.query.$valid && $scope.search_form.date.$valid) {
+            if ($scope.search_form.query.$valid) {
                 var query = "http://bytesizenews.net:8080/search/";
                 query += $scope.page_nb + "/";
-                if ($scope.search_date) {
-                    var timeQuery = JSON.parse($scope.search_date);
-                    query += timeQuery.hours + "/";
-                    query += timeQuery.days + "/";
+                if ($scope.selectedTime) {
+                    query += $scope.selectedTime.hours + "/";
+                    query += $scope.selectedTime.days + "/";
                 } else {
                     query += 0 + "/";
                     query += 0 + "/";
@@ -217,6 +216,49 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
                 event.preventDefault();
             }
         });
+    };
+}).directive('bsDropdown', function ($compile) {
+    return {
+        restrict: 'E',
+        scope: {
+            items: '=dropdownData',
+            doSelect: '&selectVal',
+            selectedItem: '=preselectedItem'
+        },
+        link: function (scope, element, attrs) {
+            var html = '';
+            switch (attrs.menuType) {
+                case "button":
+                    html += '<div class="btn-group"><button class="button-label btn nicole-copy-mike-button" myOnKeyDownCall="performSearch()">Time Span</button><button class="btn dropdown-toggle nicole-copy-mike-button" data-toggle="dropdown"><span class="caret"></span></button>';
+                    break;
+                default:
+                    html += '<div class="dropdown"><a class="dropdown-toggle" role="button" data-toggle="dropdown"  href="javascript:;">Time Span<b class="caret"></b></a>';
+                    break;
+            }
+
+            html += '<ul class="dropdown-menu nicole-copy-mike-button"><li ng-repeat="item in items"><a tabindex="-1" data-ng-click="selectVal(item)">{{item.key}}</a></li></ul></div>';
+            element.append($compile(html)(scope));
+            for (var i = 0; i < scope.items.length; i++) {
+                if (scope.items[i].key === scope.selectedItem) {
+                    scope.bSelectedItem = scope.items[i];
+                    break;
+                }
+            }
+            scope.selectVal = function (item) {
+                switch (attrs.menuType) {
+                    case "button":
+                        $('button.button-label', element).html(item.key);
+                        break;
+                    default:
+                        $('a.dropdown-toggle', element).html('<b class="caret"></b> ' + item.key);
+                        break;
+                }
+                scope.doSelect({
+                    selectedVal: item
+                });
+            };
+            scope.selectVal(scope.bSelectedItem);
+        }
     };
 });
 
