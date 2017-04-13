@@ -71,9 +71,11 @@ def get_article_by_id(article_id):
                 log.info(("Article:{0}: failed to be re-summarized").format(article))
 
         # Increment views in latest rating object
-        article.ratings[-1].nb_views += 1
-        article.save(cascade=True)
-        article.ratings[-1].save()
+
+        if len(article.ratings) > 0:
+            article.ratings[-1].nb_views += 1
+            article.save(cascade=True)
+            article.ratings[-1].save()
         return_json = {}
         # Find 4 similar articles recently published
         similar_articles_list = similar_articles(article)
@@ -376,7 +378,6 @@ def similar_articles(article):
                 if newArticle.id == article.id:
                     continue
                 returnList.append(newArticle)
-
 
             # Truncate to 4
             del returnList[4:]
