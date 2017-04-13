@@ -45,13 +45,14 @@ def fetch_and_save_latest_news():
         fetch_latest_news_by_source(source)
 
 
-
 def fetch_latest_news_by_source(source):
     """
     fetch article from newsapi service for specified source
     :param source: Source object
     :return: 
     """
+    articleCount = 0
+
     sortBy = available_sorts[0]
     for available_sort in available_sorts:
         if available_sort in source.sortBysAvailable:
@@ -59,7 +60,7 @@ def fetch_latest_news_by_source(source):
             break
 
     category = "General"  # default category
-    originalCharCount = 0# Default char count
+    originalCharCount = 0  # Default char count
 
     apirequest = article_api_request_format.format(source.source_id, sortBy, settings.NEWS_KEY)
     r = requests.get(apirequest)
@@ -148,7 +149,9 @@ def fetch_latest_news_by_source(source):
                                       source=source,description=article['description'],
                                       url_to_image=article['urlToImage'], published_at=publishedDate,
                                       nb_original_chars=originalCharCount, category=category)
+            articleCount += 1
 
+    log.info("{0} Articles added from source:{1}".format(articleCount, str(source)))
 
 def dandelion_entity_extraction(dKey, url):
     entityRequest = entity_extraction_format.format(url, dKey)
