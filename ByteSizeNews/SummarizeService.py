@@ -52,6 +52,7 @@ def summarize(article, numberOfSentances):
         # print("Error:"+errorResponse)
     elif 'sm_api_message' in jsonresponse:
         log.info(jsonresponse['sm_api_message'])
+        return None
 
 
 # test

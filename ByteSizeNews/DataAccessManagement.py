@@ -71,9 +71,11 @@ def get_article_by_id(article_id):
                 log.info(("Article:{0}: failed to be re-summarized").format(article))
 
         # Increment views in latest rating object
-        article.ratings[-1].nb_views += 1
-        article.save(cascade=True)
-        article.ratings[-1].save()
+
+        if len(article.ratings) > 0:
+            article.ratings[-1].nb_views += 1
+            article.save(cascade=True)
+            article.ratings[-1].save()
         return_json = {}
         # Find 4 similar articles recently published
         similar_articles_list = similar_articles(article)
@@ -377,7 +379,6 @@ def similar_articles(article):
                     continue
                 returnList.append(newArticle)
 
-
             # Truncate to 4
             del returnList[4:]
 
@@ -424,15 +425,16 @@ def find_articles_by_keywords_and_time(searchCriteriaString, maxHours=0, maxDays
         hasNextPage = False
 
     # re-sort on published date
-    candidateList.sort(key=lambda x: x.published_at, reverse=True)
+    candidateList = candidateList.order_by('-published_at')
 
     candidateList = candidateList[(pageNumber - 1) * NB_ARTICLES_PER_PAGE:pageNumber * NB_ARTICLES_PER_PAGE]
-
-
 
     if len(candidateList):
         return_json_list = [article.as_small_json() for article in candidateList]
         # log.info(return_json_list)
+
+        # re-sort on published date
+        return_json_list.sort(key=lambda x: x['published_at'], reverse=True)
 
         return_json = {"articles": return_json_list,
                        "hasNextPage": hasNextPage}
