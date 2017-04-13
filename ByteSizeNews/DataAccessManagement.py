@@ -428,11 +428,12 @@ def find_articles_by_keywords_and_time(searchCriteriaString, maxHours=0, maxDays
 
     candidateList = candidateList[(pageNumber - 1) * NB_ARTICLES_PER_PAGE:pageNumber * NB_ARTICLES_PER_PAGE]
 
-
-
     if len(candidateList):
         return_json_list = [article.as_small_json() for article in candidateList]
         # log.info(return_json_list)
+
+        # re-sort on published date
+        return_json_list.sort(key=lambda x: x['published_at'], reverse=True)
 
         return_json = {"articles": return_json_list,
                        "hasNextPage": hasNextPage}
