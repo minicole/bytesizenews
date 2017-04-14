@@ -121,11 +121,17 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress', 'rzModule'])
                                     article.background = "background-color: " + randomColor();
                                 }
                                 var d = new Date(article.published_at);
-                                article.hours = Math.floor((Date.now() - d.getTime()) / 1000 / 60 / 60);
-                                if (article.hours <= 0) {
-                                    article.hours = "Just now";
-                                } else {
-                                    article.hours = article.hours + " hours since posted";
+                                var now = new Date().getTime();
+                                article.timeSince = now - d.getTime();
+                                var time = Math.floor(article.timeSince / 1000 / 60);
+                                if (time <= 0) {
+                                    article.hours = "Just now"
+                                } else if (time < 60) {
+                                    article.hours = time + " minutes since posted";
+                                } else if (Math.floor(time / 60) < 24) {
+                                    article.hours = Math.floor(time / 60) + " hours since posted";
+                                } else if (Math.floor(time / 60 / 24) < 365) {
+                                    article.hours = Math.floor(time / 60 / 24) + " years since posted";
                                 }
                                 if (article.description === undefined || article.description === "") {
                                     article.description = "no description";
@@ -183,7 +189,9 @@ angular.module('myApp.article_page', ['ngRoute', 'ngProgress', 'rzModule'])
         };
 
         $scope.$on("$destroy", function () {
-            $scope.progressbar.complete();
+            if ($scope.progressbar.status() < 1) {
+                $scope.progressbar.complete();
+            }
         });
 
     }]);
