@@ -49,6 +49,7 @@ class Article(Document):
     sentiment = FloatField()
     nb_original_chars = IntField()
     category = StringField()
+    unsummarized_text = StringField()
 
     def __str__(self):
         return "{0}:{1}".format(self.title, self.url)

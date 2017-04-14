@@ -182,7 +182,7 @@ def update_summarized_article(article, nb_sentances=5):
 
 
 def save_article_unsummarized(title, author, url, source, description, url_to_image,
-                              published_at, nb_original_chars, category):
+                              published_at, nb_original_chars, category, unsummarized_text):
     """
     Checks if an article already exists from NewsApi, if not saves in DB
     :param title:
@@ -192,6 +192,7 @@ def save_article_unsummarized(title, author, url, source, description, url_to_im
     :param description:
     :param url_to_image:
     :param published_at:
+    :param unsummarized_text:
     :return:
     """
     try:
@@ -202,7 +203,7 @@ def save_article_unsummarized(title, author, url, source, description, url_to_im
     if article is None:
         article = Article(title=title, author=author, url=url, source=source, description=description,
                           url_to_image=url_to_image, published_at=published_at,
-                          nb_original_chars=nb_original_chars, category=category)
+                          nb_original_chars=nb_original_chars, category=category, unsummarized_text=unsummarized_text)
 
         try:
             article.save()

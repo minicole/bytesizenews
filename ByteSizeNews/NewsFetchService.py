@@ -148,7 +148,8 @@ def fetch_latest_news_by_source(source):
             save_article_unsummarized(title=article['title'], author=article['author'], url=article['url'],
                                       source=source,description=article['description'],
                                       url_to_image=article['urlToImage'], published_at=publishedDate,
-                                      nb_original_chars=originalCharCount, category=category)
+                                      nb_original_chars=originalCharCount, category=category,
+                                      unsummarized_text=entityExtraction)
             articleCount += 1
 
     log.info("{0} Articles added from source:{1}".format(articleCount, str(source)))

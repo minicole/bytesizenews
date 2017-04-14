@@ -32,10 +32,15 @@ def get_sentiment(article):
     }
 
     if not article.is_summarized:
-        article = summarize(article)
+        article = summarize(article, 5)
 
-    for sentence in article.summary_sentences:
-        body["documents"][0]["text"] += sentence
+    if article.unsummarized_text is not None and article.unsummarized_text is not "":
+        body["documents"][0]["text"] = article.unsummarized_text
+    else:
+        for sentence in article.summary_sentences:
+            body["documents"][0]["text"] += sentence
+
+
 
     try:
         conn = http.client.HTTPSConnection('westus.api.cognitive.microsoft.com')
