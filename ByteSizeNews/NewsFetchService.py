@@ -149,7 +149,7 @@ def fetch_latest_news_by_source(source):
                                       source=source,description=article['description'],
                                       url_to_image=article['urlToImage'], published_at=publishedDate,
                                       nb_original_chars=originalCharCount, category=category,
-                                      unsummarized_text=entityExtraction)
+                                      unsummarized_text=entityExtraction['unsummarized_text'])
             articleCount += 1
 
     log.info("{0} Articles added from source:{1}".format(articleCount, str(source)))
