@@ -192,14 +192,16 @@ def save_article_unsummarized(title, author, url, source, description, url_to_im
     :param description:
     :param url_to_image:
     :param published_at:
+    :param nb_original_chars:
+    :param category:
     :param unsummarized_text:
     :return:
     """
-
-    log.info("title: {0}, author:{1}, url:{2}, source:{3}, description:{4}, image: {5}, "
-             "pubdate: {6}, nb_chars: {7}, cat: {8}, text: {9}".format(title, author, url, source, description,
-                                                                 url_to_image, published_at, nb_original_chars,
-                                                                 category, unsummarized_text))
+    #
+    # log.info("title: {0}, author:{1}, url:{2}, source:{3}, description:{4}, image: {5}, "
+    #          "pubdate: {6}, nb_chars: {7}, cat: {8}, text: {9}".format(title, author, url, source, description,
+    #                                                              url_to_image, published_at, nb_original_chars,
+    #                                                              category, unsummarized_text))
     try:
         article = Article.objects.get(url=url)
     except Article.DoesNotExist:
