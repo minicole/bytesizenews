@@ -110,7 +110,7 @@ angular.module('myApp.article_list', ['ngRoute', 'ngProgress'])
                     } else if (Math.floor(time / 60) < 24) {
                         article.hours = Math.floor(time / 60) + " hours since posted";
                     } else if (Math.floor(time / 60 / 24) < 365) {
-                        article.hours = Math.floor(time / 60 / 24) + " years since posted";
+                        article.hours = Math.floor(time / 60 / 24) + " days since posted";
                     }
                     if (article.description === undefined || article.description === "") {
                         article.description = "no description";
