@@ -96,6 +96,8 @@ def get_article_by_id(article_id):
 
     except Article.DoesNotExist:
         return json.dumps("{'status':'Does not exist Error'}")
+    except ValidationError:
+        return json.dumps("{'status':'Does not exist Error'}")
 
 
 def get_articles_from_category(category="General",
