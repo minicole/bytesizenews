@@ -14,6 +14,7 @@ logger = get_task_logger(__name__)
 # SourceFetchingPeriod = '*/3'
 NewsFetchingPeriod = '*/45'
 
+
 @periodic_task(run_every=(crontab(minute=0)), name="news_fetching_task", ignore_result=True)
 def fetch_news():
     """fetch article from newsapi service"""
@@ -26,3 +27,18 @@ def fetch_news():
 def fetch_sources():
     """fetch sources from newsapi service"""
     fetch_save_and_update_sources()
+
+
+# Fetch and update sources at midnight every day
+# @periodic_task(run_every=(crontab(minute=SourceFetchingPeriod)), name="sources_fetching_task", ignore_result=True)
+@periodic_task(run_every=(crontab(minute=10, hour=0)), name="sources_fetching_task", ignore_result=True)
+def fetch_sources():
+    """fetch sources from newsapi service"""
+    fetch_save_and_update_sources()
+
+
+# Purge articles older than 1 year
+@periodic_task(run_every=(crontab(minute=10, hour=3)), name="year_old_article_purge_task", ignore_result=True)
+def delete_old_articles():
+    """delete articles older than a year"""
+    delete_articles_older_than_year()

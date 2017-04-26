@@ -75,6 +75,13 @@ def fetch_latest_news_by_source(source):
 
             try:
                 publishedDate = dateutil.parser.parse(article['publishedAt'])
+                time_threshold = datetime.utcnow() - timedelta(days=365)
+
+                # if date is somehow older than 1 year, usually means something was wrong in their published date
+                if publishedDate < time_threshold:
+                    # Put current
+                    publishedDate = datetime.now(pytz.utc)
+
             except:
                 # Put current
                 publishedDate = datetime.now(pytz.utc)

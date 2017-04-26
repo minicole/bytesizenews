@@ -452,6 +452,12 @@ def find_articles_by_keywords_and_time(searchCriteriaString, maxHours=0, maxDays
         return json.dumps("{'status':'No articles match the search string'}")
 
 
+def delete_articles_older_than_year():
+
+    time_threshold = datetime.utcnow() - timedelta(days=365)
+    Article.objects.filter(published_at__lte=time_threshold).delete()
+
+
 
 
 
